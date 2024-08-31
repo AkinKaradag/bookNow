@@ -1,6 +1,6 @@
-package Controller;
+package bookNow.Controller;
 
-import bookNow.Model.User;
+import bookNow.Model.UserModel;
 import bookNow.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,18 +9,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-public class User {
+public class UserController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping("/create")
-    public User createUser(@RequestBody User user) {
+    public UserModel createUser(@RequestBody UserModel user) {
         return userService.createUser(user);
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserModel> getAllUsers() {
         return userService.getAllUsers();
     }
 

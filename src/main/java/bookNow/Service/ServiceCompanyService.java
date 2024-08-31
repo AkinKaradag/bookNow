@@ -1,6 +1,6 @@
 package bookNow.Service;
 
-import bookNow.Model.Service;
+import bookNow.Model.ServiceCompanyModel;
 import bookNow.Repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,18 +8,19 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ServiceCompany {
+public class ServiceCompanyService {
 
     @Autowired
     private ServiceRepository serviceRepository;
 
-    public Service createService(Service service) {
-        return serviceRepository.save(service);
+    public ServiceCompanyModel createServiceCompany(ServiceCompanyModel serviceCompany) {
+        return serviceRepository.save(serviceCompany);
     }
 
-    public List<Service> getAllServices() {
+    public List<ServiceCompanyModel> getAllServiceCompanies() {
         return serviceRepository.findAll();
     }
 
-    // Methoden zum Ändern und Löschen von Services
+    // Weitere Methoden für Update, Delete usw.
 }
+

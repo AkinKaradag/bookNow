@@ -1,9 +1,9 @@
 package bookNow.Repository;
 
-import bookNow.Model.Service;
+import bookNow.Model.ServiceCompanyModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ServiceRepository extends JpaRepository<Service, Long> {
+public interface ServiceRepository extends JpaRepository<ServiceCompanyModel, Long> {
 }

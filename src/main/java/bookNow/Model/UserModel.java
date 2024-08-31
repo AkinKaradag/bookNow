@@ -1,11 +1,10 @@
-package Model;
+package bookNow.Model;
 
 import jakarta.persistence.*;
 
-
 @Entity
 @Table(name = "users")
-public class User {
+public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +15,17 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private UserType userType; // Enum for differentiating between Endnutzer and Firmenkonto
+    private UserType userType; // Enum für Endnutzer und Firmenkonto
 
-    // Getters and Setters
+    // Getters und Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
+
 
