@@ -8,19 +8,19 @@ public class ServiceCompanyModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long serviceId;
 
     private String name;
     private String description;
 
     // Getters und Setters
 
-    public Long getId() {
-        return id;
+    public Long getServiceId() {
+        return serviceId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setServiceId(Long id) {
+        this.serviceId = id;
     }
 
     public String getName() {
