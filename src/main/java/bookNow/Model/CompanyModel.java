@@ -2,6 +2,8 @@ package bookNow.Model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "companies")
 public class CompanyModel {
@@ -15,6 +17,13 @@ public class CompanyModel {
     private String companyPostalCode;
     private String phoneNumber;
     private String description;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id")
+    private List<ServiceCompanyModel> services;
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType; // Enum für Endnutzer und Firmenkonto
 
     // Getters und Setters
 
@@ -72,5 +81,13 @@ public class CompanyModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 }

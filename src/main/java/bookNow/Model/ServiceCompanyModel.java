@@ -1,6 +1,9 @@
 package bookNow.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "service_companies")
@@ -12,6 +15,16 @@ public class ServiceCompanyModel {
 
     private String name;
     private String description;
+
+    private int price;
+
+    private int duration;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    CompanyModel company;
 
     // Getters und Setters
 
@@ -37,6 +50,22 @@ public class ServiceCompanyModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }
 

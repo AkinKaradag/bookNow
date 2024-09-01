@@ -41,6 +41,7 @@ public class CompanyService {
             foundCompany.setPhoneNumber(updatedCompany.getPhoneNumber());
             foundCompany.setPhoneNumber(updatedCompany.getPhoneNumber());
             foundCompany.setDescription(updatedCompany.getDescription());
+            foundCompany.setUserType(updatedCompany.getUserType());
             return companyRepository.save(foundCompany);
         } else {
             return null;

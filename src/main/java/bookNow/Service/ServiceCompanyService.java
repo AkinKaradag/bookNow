@@ -36,6 +36,8 @@ public class ServiceCompanyService {
             ServiceCompanyModel foundService = service.get();
             foundService.setName(updatedService.getName());
             foundService.setDescription(updatedService.getDescription());
+            foundService.setPrice(updatedService.getPrice());
+            foundService.setDuration(updatedService.getDuration());
             return serviceRepository.save(foundService);
         } else {
             return null;
