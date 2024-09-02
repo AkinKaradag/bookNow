@@ -54,4 +54,6 @@ public class AppointmentModel {
         this.appointmentTime = appointmentTime;
     }
 
+
+
 }
