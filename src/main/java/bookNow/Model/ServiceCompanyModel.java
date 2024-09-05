@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.List;
+
 @Entity
 @Table(name = "service_companies")
 public class ServiceCompanyModel {
@@ -25,6 +27,9 @@ public class ServiceCompanyModel {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     CompanyModel company;
+
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AppointmentModel> appointments;
 
     // Getters und Setters
 
@@ -66,6 +71,22 @@ public class ServiceCompanyModel {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public CompanyModel getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyModel company) {
+        this.company = company;
+    }
+
+    public List<AppointmentModel> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<AppointmentModel> appointments) {
+        this.appointments = appointments;
     }
 }
 

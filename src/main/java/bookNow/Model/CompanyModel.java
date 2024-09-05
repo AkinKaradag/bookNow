@@ -18,9 +18,7 @@ public class CompanyModel {
     private String phoneNumber;
     private String description;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id")
-    private List<ServiceCompanyModel> services;
+
 
     @Enumerated(EnumType.STRING)
     private UserType userType; // Enum für Endnutzer und Firmenkonto
@@ -90,4 +88,6 @@ public class CompanyModel {
     public void setUserType(UserType userType) {
         this.userType = userType;
     }
+
+
 }
