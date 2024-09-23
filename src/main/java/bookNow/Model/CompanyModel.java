@@ -18,7 +18,8 @@ public class CompanyModel {
     private String phoneNumber;
     private String description;
 
-
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AppointmentModel> appointments;
 
     @Enumerated(EnumType.STRING)
     private UserType userType; // Enum für Endnutzer und Firmenkonto
@@ -87,6 +88,14 @@ public class CompanyModel {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public List<AppointmentModel> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<AppointmentModel> appointments) {
+        this.appointments = appointments;
     }
 
 

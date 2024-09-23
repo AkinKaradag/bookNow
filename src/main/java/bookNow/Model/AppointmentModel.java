@@ -1,5 +1,7 @@
 package bookNow.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -7,13 +9,16 @@ import java.time.LocalTime;
 
 @Entity
 @Table (name = "appointments")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AppointmentModel {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long appointmentId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate appointmentDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime appointmentTime;
 
     @ManyToOne
@@ -54,6 +59,28 @@ public class AppointmentModel {
         this.appointmentTime = appointmentTime;
     }
 
+    public CompanyModel getCompany() {
+        return company;
+    }
 
+    public void setCompany(CompanyModel company) {
+        this.company = company;
+    }
+
+    public ServiceCompanyModel getService() {
+        return service;
+    }
+
+    public void setService(ServiceCompanyModel service) {
+        this.service = service;
+    }
+
+    public UserModel getUser() {
+        return user;
+    }
+
+    public void setUser(UserModel user) {
+        this.user = user;
+    }
 
 }
