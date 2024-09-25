@@ -1,63 +1,72 @@
 package bookNow.requests;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AppointmentCreateRequest {
 
-    private Long appointmentIdRequest;
-    private LocalDate appointmentDateRequest;
-    private LocalTime appointmentTimeRequest;
-    private Long companyIdRequest;
-    private Long serviceIdRequest;
-    private Long userIdRequest;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private Long appointmentId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate appointmentDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    private LocalTime appointmentTime;
+    private Long companyId;
+    private Long serviceId;
+    private Long userId;
 
-    public Long getAppointmentIdRequest() {
-        return appointmentIdRequest;
+    public Long getAppointmentId() {
+        return appointmentId;
     }
 
-    public void setAppointmentIdRequest(Long appointmentId) {
-        this.appointmentIdRequest = appointmentId;
+    public void setAppointmentId(Long appointmentId) {
+        this.appointmentId = appointmentId;
     }
 
-    public LocalDate getAppointmentDateRequest() {
-        return appointmentDateRequest;
+    public LocalDate getAppointmentDate() {
+        return appointmentDate;
     }
 
-    public void setAppointmentDateRequest(LocalDate appointmentDate) {
-        this.appointmentDateRequest = appointmentDate;
+    public void setAppointmentDate(LocalDate appointmentDate) {
+        this.appointmentDate = appointmentDate;
     }
 
-    public LocalTime getAppointmentTimeRequest() {
-        return appointmentTimeRequest;
+    public LocalTime getAppointmentTime() {
+        return appointmentTime;
     }
 
-    public void setAppointmentTimeRequest(LocalTime appointmentTime) {
-        this.appointmentTimeRequest = appointmentTime;
+    public void setAppointmentTime(LocalTime appointmentTime) {
+        this.appointmentTime = appointmentTime;
     }
 
-    public Long getCompanyIdRequest() {
-        return companyIdRequest;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setCompanyIdRequest(Long companyId) {
-        this.companyIdRequest = companyId;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
-    public Long getServiceIdRequest() {
-        return serviceIdRequest;
+    public Long getServiceId() {
+        return serviceId;
     }
 
-    public void setServiceIdRequest(Long serviceId) {
-        this.serviceIdRequest = serviceId;
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public Long getUserIdRequest() {
-        return userIdRequest;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUserIdRequest(Long userId) {
-        this.userIdRequest = userId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
+
+
+
 }

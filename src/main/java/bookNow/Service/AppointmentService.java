@@ -9,6 +9,7 @@ import bookNow.requests.AppointmentCreateRequest;
 import bookNow.requests.AppointmentUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,29 +31,31 @@ public class AppointmentService {
     }
 
     public AppointmentModel createAppointment(AppointmentCreateRequest newAppointment) {
-        UserModel user = userService.getUserById(newAppointment.getUserIdRequest());
-        CompanyModel company = companyService.getCompanyById(newAppointment.getCompanyIdRequest());
-        ServiceCompanyModel service = serviceCompanyService.getServiceById(newAppointment.getServiceIdRequest());
+        UserModel user = userService.getUserById(newAppointment.getUserId());
+        CompanyModel company = companyService.getCompanyById(newAppointment.getCompanyId());
+        ServiceCompanyModel service = serviceCompanyService.getServiceById(newAppointment.getServiceId());
         if (user == null) {
             return null;
-
+        } else if (company == null) {
+            return null;
+        } else if (service == null) {
+            return null;
         } else {
-            AppointmentModel toSave = new AppointmentModel();
-            toSave.setAppointmentId(newAppointment.getAppointmentIdRequest());
-            toSave.setAppointmentDate(newAppointment.getAppointmentDateRequest());
-            toSave.setAppointmentTime(newAppointment.getAppointmentTimeRequest());
-            toSave.setUser(user);
-            toSave.setCompany(company);
-            toSave.setService(service);
-            return appointmentRepository.save(toSave);
-        }
+        AppointmentModel toSave = new AppointmentModel();
+        toSave.setAppointmentId(newAppointment.getAppointmentId());
+        toSave.setAppointmentDate(newAppointment.getAppointmentDate());
+        toSave.setAppointmentTime(newAppointment.getAppointmentTime());
+        toSave.setUser(user);
+        toSave.setCompany(company);
+        toSave.setService(service);
+        return appointmentRepository.save(toSave);
+        } }
 
-    }
         public List<AppointmentModel> getAllAppointments () {
             return appointmentRepository.findAll();
         }
 
-        public AppointmentModel getAppointmentById (Long appointmentId){
+        public AppointmentModel getAppointmentById (@PathVariable Long appointmentId){
             return appointmentRepository.findById(appointmentId).orElse(null);
         }
 

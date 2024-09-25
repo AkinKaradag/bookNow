@@ -9,7 +9,6 @@ import java.time.LocalTime;
 
 @Entity
 @Table (name = "appointments")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class AppointmentModel {
 
 
@@ -17,20 +16,26 @@ public class AppointmentModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long appointmentId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @Column(columnDefinition = "DATE")
     private LocalDate appointmentDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    @Column(columnDefinition = "TIME")
     private LocalTime appointmentTime;
+
 
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     CompanyModel company;
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     ServiceCompanyModel service;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     UserModel user;
 
     // Getters und Setters

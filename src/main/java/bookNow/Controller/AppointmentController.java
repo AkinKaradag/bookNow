@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/appointments")
@@ -22,7 +23,7 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public List<AppointmentModel> getAllAppointments() {
+    public List<AppointmentModel> getAllAppointments(@RequestParam Optional<Long> UserId, @RequestParam Optional<Long> CompanyId, @RequestParam Optional<Long> ServiceId) {
         return appointmentService.getAllAppointments();
     }
 
