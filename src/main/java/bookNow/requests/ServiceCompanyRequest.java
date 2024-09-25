@@ -1,19 +1,10 @@
-package bookNow.Model;
+package bookNow.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.List;
+public class ServiceCompanyRequest {
 
-@Entity
-@Table(name = "service_companies")
-public class ServiceCompanyModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long serviceId;
 
     private String name;
@@ -23,17 +14,8 @@ public class ServiceCompanyModel {
     private int price;
 
     private int duration;
-
-    @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnoreProperties(ignoreUnknown = true)
-    CompanyModel company;
-
-    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<AppointmentModel> appointments;
-
-    // Getters und Setters
+    private Long companyId;
 
     public Long getServiceId() {
         return serviceId;
@@ -75,20 +57,11 @@ public class ServiceCompanyModel {
         this.duration = duration;
     }
 
-    public CompanyModel getCompany() {
-        return company;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setCompany(CompanyModel company) {
-        this.company = company;
-    }
-
-    public List<AppointmentModel> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(List<AppointmentModel> appointments) {
-        this.appointments = appointments;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 }
-

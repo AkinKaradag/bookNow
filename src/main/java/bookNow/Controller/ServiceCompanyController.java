@@ -2,6 +2,7 @@ package bookNow.Controller;
 
 import bookNow.Model.ServiceCompanyModel;
 import bookNow.Service.ServiceCompanyService;
+import bookNow.requests.ServiceCompanyRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class ServiceCompanyController {
     private ServiceCompanyService serviceCompanyService;
 
     @PostMapping
-    public ServiceCompanyModel createServiceCompany(@RequestBody ServiceCompanyModel serviceCompany) {
+    public ServiceCompanyModel createServiceCompany(@RequestBody ServiceCompanyRequest serviceCompany) {
         return serviceCompanyService.createServiceCompany(serviceCompany);
     }
 

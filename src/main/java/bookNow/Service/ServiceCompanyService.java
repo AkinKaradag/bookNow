@@ -1,7 +1,9 @@
 package bookNow.Service;
 
+import bookNow.Model.CompanyModel;
 import bookNow.Model.ServiceCompanyModel;
 import bookNow.Repository.ServiceRepository;
+import bookNow.requests.ServiceCompanyRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +16,26 @@ public class ServiceCompanyService {
     @Autowired
     private ServiceRepository serviceRepository;
 
-    public ServiceCompanyService(ServiceRepository serviceRepository) {
+    private CompanyService companyService;
+
+    public ServiceCompanyService(ServiceRepository serviceRepository, CompanyService companyService) {
         this.serviceRepository = serviceRepository;
+        this.companyService = companyService;
     }
 
-    public ServiceCompanyModel createServiceCompany(ServiceCompanyModel serviceCompany) {
-        return serviceRepository.save(serviceCompany);
+    public ServiceCompanyModel createServiceCompany(ServiceCompanyRequest newServiceCompany) {
+        CompanyModel company = companyService.getCompanyById(newServiceCompany.getCompanyId());
+        if (company == null) {
+            return null;
+        } else {
+            ServiceCompanyModel toSave = new ServiceCompanyModel();
+            toSave.setName(newServiceCompany.getName());
+            toSave.setDescription(newServiceCompany.getDescription());
+            toSave.setPrice(newServiceCompany.getPrice());
+            toSave.setDuration(newServiceCompany.getDuration());
+            toSave.setCompany(company);
+            return serviceRepository.save(toSave);
+        }
     }
 
     public List<ServiceCompanyModel> getAllServiceCompanies() {
