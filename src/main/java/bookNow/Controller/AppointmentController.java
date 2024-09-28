@@ -23,14 +23,14 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public List<AppointmentModel> getAllAppointments(@RequestParam Optional<Long> UserId, @RequestParam Optional<Long> CompanyId, @RequestParam Optional<Long> ServiceId) {
-        return appointmentService.getAllAppointments();
+    public List<AppointmentModel> getAllAppointments(@RequestParam Optional<Long> userId, @RequestParam Optional<Long> companyId, @RequestParam Optional<Long> serviceId) {
+        return appointmentService.getAllAppointments(userId, companyId, serviceId);
     }
 
     @GetMapping("/{appointmentId}")
-    public AppointmentModel getAppointmentById(@PathVariable Long appointmentId) {
+    public AppointmentModel findByAppointmentId(@PathVariable Long appointmentId) {
         //custom exception
-        return appointmentService.getAppointmentById(appointmentId);
+        return appointmentService.findByAppointmentId(appointmentId);
     }
 
     @PutMapping("/{appointmentId}")

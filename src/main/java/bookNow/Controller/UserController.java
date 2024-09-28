@@ -27,9 +27,9 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserModel getUserById(@PathVariable Long userId) {
+    public UserModel findByUserId(@PathVariable Long userId) {
         //custom exception
-        return userService.getUserById(userId);
+        return userService.findByUserId(userId);
     }
 
     @PutMapping("/{userId}")

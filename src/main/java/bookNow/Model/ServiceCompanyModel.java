@@ -14,7 +14,7 @@ public class ServiceCompanyModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long serviceId;
+    private Long id;
 
     private String name;
 
@@ -24,23 +24,21 @@ public class ServiceCompanyModel {
 
     private int duration;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonIgnore
     CompanyModel company;
 
-    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<AppointmentModel> appointments;
 
     // Getters und Setters
 
     public Long getServiceId() {
-        return serviceId;
+        return id;
     }
 
     public void setServiceId(Long id) {
-        this.serviceId = id;
+        this.id = id;
     }
 
     public String getName() {
@@ -83,12 +81,5 @@ public class ServiceCompanyModel {
         this.company = company;
     }
 
-    public List<AppointmentModel> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(List<AppointmentModel> appointments) {
-        this.appointments = appointments;
-    }
 }
 

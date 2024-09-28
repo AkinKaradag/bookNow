@@ -4,6 +4,7 @@ import bookNow.Model.CompanyModel;
 import bookNow.Model.ServiceCompanyModel;
 import bookNow.Repository.ServiceRepository;
 import bookNow.requests.ServiceCompanyRequest;
+import bookNow.requests.ServiceCompanyUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class ServiceCompanyService {
     }
 
     public ServiceCompanyModel createServiceCompany(ServiceCompanyRequest newServiceCompany) {
-        CompanyModel company = companyService.getCompanyById(newServiceCompany.getCompanyId());
+        CompanyModel company = companyService.findByCompanyId(newServiceCompany.getCompanyId());
         if (company == null) {
             return null;
         } else {
@@ -38,23 +39,27 @@ public class ServiceCompanyService {
         }
     }
 
-    public List<ServiceCompanyModel> getAllServiceCompanies() {
+    public List<ServiceCompanyModel> getAllServiceCompanies(Optional<Long> companyId) {
+        if(companyId.isPresent()) {
+            return serviceRepository.findByCompanyId(companyId.get());
+        } else {
         return serviceRepository.findAll();
+        }
     }
 
-    public ServiceCompanyModel getServiceById(Long serviceId) {
+    public ServiceCompanyModel findByServiceId(Long serviceId) {
         return serviceRepository.findById(serviceId).orElse(null);
     }
 
-    public ServiceCompanyModel updateService(Long serviceId, ServiceCompanyModel updatedService) {
+    public ServiceCompanyModel updateService(Long serviceId, ServiceCompanyUpdate updatedService) {
         Optional<ServiceCompanyModel> service = serviceRepository.findById(serviceId);
         if (service.isPresent()) {
-            ServiceCompanyModel foundService = service.get();
-            foundService.setName(updatedService.getName());
-            foundService.setDescription(updatedService.getDescription());
-            foundService.setPrice(updatedService.getPrice());
-            foundService.setDuration(updatedService.getDuration());
-            return serviceRepository.save(foundService);
+            ServiceCompanyModel toUpdate = service.get();
+            toUpdate.setName(updatedService.getName());
+            toUpdate.setDescription(updatedService.getDescription());
+            toUpdate.setPrice(updatedService.getPrice());
+            toUpdate.setDuration(updatedService.getDuration());
+            return serviceRepository.save(toUpdate);
         } else {
             return null;
         }

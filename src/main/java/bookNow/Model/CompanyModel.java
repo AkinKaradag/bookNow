@@ -10,16 +10,19 @@ public class CompanyModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long companyId;
-    private String companyName;
-    private String companyAddress;
-    private String companyCity;
-    private String companyPostalCode;
-    private String phoneNumber;
-    private String description;
+    private Long id;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<AppointmentModel> appointments;
+    private String companyName;
+
+    private String companyAddress;
+
+    private String companyCity;
+
+    private String companyPostalCode;
+
+    private String phoneNumber;
+
+    private String description;
 
     @Enumerated(EnumType.STRING)
     private UserType userType; // Enum für Endnutzer und Firmenkonto
@@ -27,11 +30,11 @@ public class CompanyModel {
     // Getters und Setters
 
     public Long getCompanyId() {
-        return companyId;
+        return id;
     }
 
     public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
+        this.id = companyId;
     }
 
     public String getCompanyName() {
@@ -89,14 +92,5 @@ public class CompanyModel {
     public void setUserType(UserType userType) {
         this.userType = userType;
     }
-
-    public List<AppointmentModel> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(List<AppointmentModel> appointments) {
-        this.appointments = appointments;
-    }
-
 
 }

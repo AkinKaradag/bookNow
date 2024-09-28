@@ -31,9 +31,9 @@ public class AppointmentService {
     }
 
     public AppointmentModel createAppointment(AppointmentCreateRequest newAppointment) {
-        UserModel user = userService.getUserById(newAppointment.getUserId());
-        CompanyModel company = companyService.getCompanyById(newAppointment.getCompanyId());
-        ServiceCompanyModel service = serviceCompanyService.getServiceById(newAppointment.getServiceId());
+        UserModel user = userService.findByUserId(newAppointment.getUserId());
+        CompanyModel company = companyService.findByCompanyId(newAppointment.getCompanyId());
+        ServiceCompanyModel service = serviceCompanyService.findByServiceId(newAppointment.getServiceId());
         if (user == null) {
             return null;
         } else if (company == null) {
@@ -51,11 +51,19 @@ public class AppointmentService {
         return appointmentRepository.save(toSave);
         } }
 
-        public List<AppointmentModel> getAllAppointments () {
-            return appointmentRepository.findAll();
+        public List<AppointmentModel> getAllAppointments (Optional <Long> userId, Optional <Long> companyId, Optional <Long> serviceId){
+            if (userId.isPresent()) {
+                return appointmentRepository.findByUserId(userId.get());
+            } else if (companyId.isPresent()) {
+                return appointmentRepository.findByCompanyId(companyId.get());
+            } else if (serviceId.isPresent()) {
+                return appointmentRepository.findByServiceId(serviceId.get());
+            } else{
+                return appointmentRepository.findAll();
+            }
         }
 
-        public AppointmentModel getAppointmentById (@PathVariable Long appointmentId){
+        public AppointmentModel findByAppointmentId (@PathVariable Long appointmentId){
             return appointmentRepository.findById(appointmentId).orElse(null);
         }
 

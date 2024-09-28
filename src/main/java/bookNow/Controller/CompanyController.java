@@ -25,9 +25,9 @@ public class CompanyController {
     }
 
     @GetMapping("/{companyId}")
-    public CompanyModel getCompanyById(@PathVariable Long companyId) {
+    public CompanyModel findByCompanyId(@PathVariable Long companyId) {
         //custom exception
-        return companyService.getCompanyById(companyId);
+        return companyService.findByCompanyId(companyId);
     }
 
     @PutMapping("/{companyId}")

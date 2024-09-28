@@ -3,10 +3,12 @@ package bookNow.Controller;
 import bookNow.Model.ServiceCompanyModel;
 import bookNow.Service.ServiceCompanyService;
 import bookNow.requests.ServiceCompanyRequest;
+import bookNow.requests.ServiceCompanyUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/service-companies")
@@ -21,18 +23,18 @@ public class ServiceCompanyController {
     }
 
     @GetMapping
-    public List<ServiceCompanyModel> getAllServiceCompanies() {
-        return serviceCompanyService.getAllServiceCompanies();
+    public List<ServiceCompanyModel> getAllServiceCompanies(@RequestParam Optional<Long> companyId) {
+        return serviceCompanyService.getAllServiceCompanies(companyId);
     }
 
     @GetMapping("/{serviceId}")
-    public ServiceCompanyModel getServiceById(@PathVariable Long serviceId) {
+    public ServiceCompanyModel findByServiceId(@PathVariable Long serviceId) {
         //custom exception
-        return serviceCompanyService.getServiceById(serviceId);
+        return serviceCompanyService.findByServiceId(serviceId);
     }
 
     @PutMapping("/{serviceId}")
-    public ServiceCompanyModel updateService(@PathVariable Long serviceId, @RequestBody ServiceCompanyModel updatedService) {
+    public ServiceCompanyModel updateService(@PathVariable Long serviceId, @RequestBody ServiceCompanyUpdate updatedService) {
         return serviceCompanyService.updateService(serviceId, updatedService);
 
     }

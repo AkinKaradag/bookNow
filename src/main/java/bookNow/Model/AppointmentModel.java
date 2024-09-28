@@ -1,8 +1,11 @@
 package bookNow.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,7 +17,7 @@ public class AppointmentModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long appointmentId;
+    private Long id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(columnDefinition = "DATE")
     private LocalDate appointmentDate;
@@ -22,30 +25,32 @@ public class AppointmentModel {
     @Column(columnDefinition = "TIME")
     private LocalTime appointmentTime;
 
-
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
-    @JsonIgnoreProperties(ignoreUnknown = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     CompanyModel company;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id", nullable = false)
-    @JsonIgnoreProperties(ignoreUnknown = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     ServiceCompanyModel service;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties(ignoreUnknown = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     UserModel user;
 
     // Getters und Setters
 
     public Long getAppointmentId() {
-        return appointmentId;
+        return id;
     }
 
     public void setAppointmentId(Long appointmentId) {
-        this.appointmentId = appointmentId;
+        this.id = appointmentId;
     }
 
     public LocalDate getAppointmentDate() {
