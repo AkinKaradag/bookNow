@@ -1,44 +1,111 @@
 import React, { useState, useEffect } from 'react';
 //import ReactDOM from 'react-dom';
+import "./ServiceCompany.scss";
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Collapse from '@mui/material/Collapse';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import { red } from '@mui/material/colors';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import {styled} from "@mui/material";
+import {IconButtonProps} from "@mui/material/IconButton";
 
+interface ExpandMoreProps extends IconButtonProps {
+    expand: boolean;
+}
 
-function ServiceCompany() {
-    const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [serviceCompaniesList, setServiceCompaniesList] = useState([]);
+const ExpandMore = styled((props: ExpandMoreProps) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+})(({ theme }) => ({
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+        duration: theme.transitions.duration.shortest,
+    }),
+    variants: [
+        {
+            props: ({ expand }) => !expand,
+            style: {
+                transform: 'rotate(0deg)',
+            },
+        },
+        {
+            props: ({ expand }) => !!expand,
+            style: {
+                transform: 'rotate(180deg)',
+            },
+        },
+    ],
+}));
 
-    useEffect(() => {
-        fetch("/service-companies")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setIsLoaded(true);
-                    setServiceCompaniesList(result);
-                },
-                (error) => {
-                    setIsLoaded(true);
-                    setError(error);
-                }
-            )
+function ServiceCompany(props) {
 
-    }, [])
+    const {title, description, price, duration} = props;
+    const [expanded, setExpanded] = React.useState(false);
 
-    if (error) {
-        return <div > Error!!! < /div>;
-    } else if (!isLoaded) {
-        return <div > Loading... < /div>;
-    } else {
-        return (
-            <ul> {
-                serviceCompaniesList.map(serviceCompany => (
-                    <li>
-                        {serviceCompany.name} {serviceCompany.description} {serviceCompany.price} {serviceCompany.duration}
-                </li>
-                ))
-            }
-            </ul>
-        );
-    }
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+    };
+
+    return(
+        <div className="serviceContainer">
+            <Card sx={{ maxWidth: 345 }}>
+                <CardHeader
+                    avatar={
+                        <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                            R
+                        </Avatar>
+                    }
+                    action={
+                        <IconButton aria-label="settings">
+                            <MoreVertIcon />
+                        </IconButton>
+                    }
+                    title={title}
+                    subheader="September 14, 2016"
+                />
+
+                <CardContent>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        {description}
+                    </Typography>
+                </CardContent>
+                <CardActions disableSpacing>
+                    <IconButton aria-label="add to favorites">
+                        <FavoriteIcon />
+                    </IconButton>
+                    <IconButton aria-label="share">
+                        <ShareIcon />
+                    </IconButton>
+                    <ExpandMore
+                        expand={expanded}
+                        onClick={handleExpandClick}
+                        aria-expanded={expanded}
+                        aria-label="show more"
+                    >
+                        <ExpandMoreIcon />
+                    </ExpandMore>
+                </CardActions>
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <CardContent>
+
+                    </CardContent>
+                </Collapse>
+            </Card>
+            {title}
+            {description}
+            {price}
+            {duration}
+        </div>
+    )
+
 }
 
 export default ServiceCompany;
