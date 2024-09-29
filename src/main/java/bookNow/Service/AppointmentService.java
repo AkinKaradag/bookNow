@@ -34,31 +34,33 @@ public class AppointmentService {
         UserModel user = userService.findByUserId(newAppointment.getUserId());
         CompanyModel company = companyService.findByCompanyId(newAppointment.getCompanyId());
         ServiceCompanyModel service = serviceCompanyService.findByServiceId(newAppointment.getServiceId());
-        if (user == null) {
-            return null;
-        } else if (company == null) {
-            return null;
-        } else if (service == null) {
-            return null;
+        if (user != null && company != null && service != null) {
+            AppointmentModel toSave = new AppointmentModel();
+            toSave.setAppointmentId(newAppointment.getAppointmentId());
+            toSave.setAppointmentDate(newAppointment.getAppointmentDate());
+            toSave.setAppointmentTime(newAppointment.getAppointmentTime());
+            toSave.setUser(user);
+            toSave.setCompany(company);
+            toSave.setService(service);
+            return appointmentRepository.save(toSave);
         } else {
-        AppointmentModel toSave = new AppointmentModel();
-        toSave.setAppointmentId(newAppointment.getAppointmentId());
-        toSave.setAppointmentDate(newAppointment.getAppointmentDate());
-        toSave.setAppointmentTime(newAppointment.getAppointmentTime());
-        toSave.setUser(user);
-        toSave.setCompany(company);
-        toSave.setService(service);
-        return appointmentRepository.save(toSave);
+            return null;
         } }
 
-        public List<AppointmentModel> getAllAppointments (Optional <Long> userId, Optional <Long> companyId, Optional <Long> serviceId){
-            if (userId.isPresent()) {
+        public List<AppointmentModel> getAllAppointments (Optional <Long> userId, Optional <Long> companyId, Optional <Long> serviceId) {
+            if (userId.isPresent() && companyId.isPresent()) {
+                return appointmentRepository.findByUserIdAndCompanyId(userId.get(), companyId.get());
+            } else if (userId.isPresent() && serviceId.isPresent()) {
+                return appointmentRepository.findByUserIdAndServiceId(userId.get(), serviceId.get());
+            } else if (companyId.isPresent() && serviceId.isPresent()) {
+                return appointmentRepository.findByCompanyIdAndServiceId(companyId.get(), serviceId.get());
+            }else if (userId.isPresent()) {
                 return appointmentRepository.findByUserId(userId.get());
             } else if (companyId.isPresent()) {
                 return appointmentRepository.findByCompanyId(companyId.get());
             } else if (serviceId.isPresent()) {
                 return appointmentRepository.findByServiceId(serviceId.get());
-            } else{
+            } else {
                 return appointmentRepository.findAll();
             }
         }

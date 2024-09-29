@@ -40,7 +40,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Long userId) {
-        userService.deleteUser(userId);
+        userService.deleteById(userId);
     }
 
     // Weitere Endpunkte für Update, Delete usw.

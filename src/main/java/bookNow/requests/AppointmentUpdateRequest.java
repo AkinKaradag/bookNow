@@ -1,27 +1,21 @@
 package bookNow.requests;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+
+@Data
 public class AppointmentUpdateRequest {
-    LocalDate appointmentDateRequest;
-    LocalTime appointmentTimeRequest;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate appointmentDateRequest;
 
-    public LocalDate getAppointmentDateRequest() {
-        return appointmentDateRequest;
-    }
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+    private LocalTime appointmentTimeRequest;
 
-    public void setAppointmentDateRequest(LocalDate appointmentDate) {
-        this.appointmentDateRequest = appointmentDate;
-    }
 
-    public LocalTime getAppointmentTimeRequest() {
-        return appointmentTimeRequest;
-    }
-
-    public void setAppointmentTimeRequest(LocalTime appointmentTime) {
-        this.appointmentTimeRequest = appointmentTime;
-    }
 }
 
 
