@@ -24,10 +24,9 @@ public class ServiceCompanyModel {
 
     private int duration;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
     CompanyModel company;
 
 

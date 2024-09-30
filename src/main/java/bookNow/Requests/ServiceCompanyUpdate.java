@@ -1,4 +1,4 @@
-package bookNow.requests;
+package bookNow.Requests;
 
 
 import lombok.Data;

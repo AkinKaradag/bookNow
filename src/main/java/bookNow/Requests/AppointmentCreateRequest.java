@@ -1,4 +1,4 @@
-package bookNow.requests;
+package bookNow.Requests;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

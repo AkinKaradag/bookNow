@@ -2,8 +2,8 @@ package bookNow.Controller;
 
 import bookNow.Model.AppointmentModel;
 import bookNow.Service.AppointmentService;
-import bookNow.requests.AppointmentCreateRequest;
-import bookNow.requests.AppointmentUpdateRequest;
+import bookNow.Requests.AppointmentCreateRequest;
+import bookNow.Requests.AppointmentUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

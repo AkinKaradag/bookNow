@@ -4,21 +4,22 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import {makeStyles} from "@mui/styles";
 
 
-const useStyle = {
+const useStyle = makeStyles((theme) => ({
     link: {
         textDecoration: "None",
         boxShadow: "None",
         color: "white"
     }
-};
+}));
 
 function Navbar() {
     let userId = 5;
+    const classes = useStyle();
     return(
 
         <div>
@@ -34,11 +35,12 @@ function Navbar() {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                            <Link style={useStyle.link} to="/">Home</Link>
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign="left">
+                            <Link className={classes.link} to="/">Home</Link>
                         </Typography>
-                        <Link style={useStyle.link} to={{pathname : 'users/' + userId}}>Users</Link>
-                        <Button color="inherit">Login</Button>
+                        <Typography variant="h6" component="div">
+                        <Link className={classes.link} to={{pathname : 'users/' + userId}}>Users</Link>
+                        </Typography>
                     </Toolbar>
                 </AppBar>
             </Box>

@@ -3,8 +3,8 @@ package bookNow.Service;
 import bookNow.Model.CompanyModel;
 import bookNow.Model.ServiceCompanyModel;
 import bookNow.Repository.ServiceRepository;
-import bookNow.requests.ServiceCompanyRequest;
-import bookNow.requests.ServiceCompanyUpdate;
+import bookNow.Requests.ServiceCompanyRequest;
+import bookNow.Requests.ServiceCompanyUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

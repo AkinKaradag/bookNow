@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 //import ReactDOM from 'react-dom';
-import "./ServiceCompany.scss";
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
@@ -13,9 +12,31 @@ import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {styled} from "@mui/material";
 import {IconButtonProps} from "@mui/material/IconButton";
+import {makeStyles} from "@mui/styles";
+
+const useStyle = makeStyles((theme) => ({
+    root: {
+        width: 800,
+        textAlign: "left",
+        margin: 20
+    },
+    media: {
+        height: 0,
+        paddingTop: '56.25%'
+    },
+
+    avatar: {
+        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+    },
+    link: {
+        textDecoration: "None",
+        boxShadow: "None",
+        color: "white"
+    }
+}));
+
 
 interface ExpandMoreProps extends IconButtonProps {
     expand: boolean;
@@ -49,6 +70,7 @@ function ServiceCompany(props) {
 
     const {title, description, price, duration} = props;
     const [expanded, setExpanded] = React.useState(false);
+    const classes = useStyle();
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -56,18 +78,14 @@ function ServiceCompany(props) {
 
     return(
         <div className="serviceContainer">
-            <Card sx={{ maxWidth: 345 }}>
+            <Card className={classes.root}>
                 <CardHeader
                     avatar={
                         <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
                             R
                         </Avatar>
                     }
-                    action={
-                        <IconButton aria-label="settings">
-                            <MoreVertIcon />
-                        </IconButton>
-                    }
+
                     title={title}
                     subheader="September 14, 2016"
                 />

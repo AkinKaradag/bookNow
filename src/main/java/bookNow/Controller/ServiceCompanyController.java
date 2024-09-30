@@ -2,8 +2,8 @@ package bookNow.Controller;
 
 import bookNow.Model.ServiceCompanyModel;
 import bookNow.Service.ServiceCompanyService;
-import bookNow.requests.ServiceCompanyRequest;
-import bookNow.requests.ServiceCompanyUpdate;
+import bookNow.Requests.ServiceCompanyRequest;
+import bookNow.Requests.ServiceCompanyUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
