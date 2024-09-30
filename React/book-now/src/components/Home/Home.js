@@ -47,10 +47,10 @@ function Home(){
 
             <div className="container">
 
-                    <Container maxWidth="sm" className={classes.container}>
+                    <Container fixed className={classes.container}>
 
                 {serviceCompaniesList.map(serviceCompany => (
-                    <ServiceCompany title={serviceCompany.name} description={serviceCompany.description} price={serviceCompany.price} duration={serviceCompany.duration}></ServiceCompany>
+                    <ServiceCompany title={serviceCompany.name} companyId={serviceCompany.companyId} companyName={serviceCompany.companyName} description={serviceCompany.description} price={serviceCompany.price} duration={serviceCompany.duration}></ServiceCompany>
                 ))
                 } </Container>
 

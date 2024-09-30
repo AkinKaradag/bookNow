@@ -5,11 +5,13 @@ import bookNow.Model.ServiceCompanyModel;
 import bookNow.Repository.ServiceRepository;
 import bookNow.Requests.ServiceCompanyRequest;
 import bookNow.Requests.ServiceCompanyUpdate;
+import bookNow.Response.ServiceCompanyResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ServiceCompanyService {
@@ -39,12 +41,15 @@ public class ServiceCompanyService {
         }
     }
 
-    public List<ServiceCompanyModel> getAllServiceCompanies(Optional<Long> companyId) {
+    public List<ServiceCompanyResponse> getAllServiceCompanies(Optional<Long> companyId) {
+        List<ServiceCompanyModel> listServices;
         if(companyId.isPresent()) {
-            return serviceRepository.findByCompanyId(companyId.get());
+            listServices = serviceRepository.findByCompanyId(companyId.get());
         } else {
-        return serviceRepository.findAll();
+            listServices = serviceRepository.findAll();
         }
+        return listServices.stream().map(ServiceCompanyResponse::new).collect(Collectors.toList());
+
     }
 
     public ServiceCompanyModel findByServiceId(Long serviceId) {

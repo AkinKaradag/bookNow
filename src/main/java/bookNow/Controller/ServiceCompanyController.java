@@ -1,6 +1,7 @@
 package bookNow.Controller;
 
 import bookNow.Model.ServiceCompanyModel;
+import bookNow.Response.ServiceCompanyResponse;
 import bookNow.Service.ServiceCompanyService;
 import bookNow.Requests.ServiceCompanyRequest;
 import bookNow.Requests.ServiceCompanyUpdate;
@@ -23,7 +24,7 @@ public class ServiceCompanyController {
     }
 
     @GetMapping
-    public List<ServiceCompanyModel> getAllServiceCompanies(@RequestParam Optional<Long> companyId) {
+    public List<ServiceCompanyResponse> getAllServiceCompanies(@RequestParam Optional<Long> companyId) {
         return serviceCompanyService.getAllServiceCompanies(companyId);
     }
 

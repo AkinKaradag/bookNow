@@ -68,7 +68,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 function ServiceCompany(props) {
 
-    const {title, description, price, duration} = props;
+    const {title, description, price, duration, companyId, companyName} = props;
     const [expanded, setExpanded] = React.useState(false);
     const classes = useStyle();
 
@@ -82,7 +82,7 @@ function ServiceCompany(props) {
                 <CardHeader
                     avatar={
                         <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                            R
+                            {companyName.charAt(0).toUpperCase()}
                         </Avatar>
                     }
 
@@ -117,10 +117,7 @@ function ServiceCompany(props) {
                     </CardContent>
                 </Collapse>
             </Card>
-            {title}
-            {description}
-            {price}
-            {duration}
+
         </div>
     )
 
