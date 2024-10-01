@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import ServiceCompany from "../ServiceCompany/ServiceCompany";
 import Container from '@mui/material/Container';
 import {makeStyles} from "@mui/styles";
+import ServiceCompanyCreateForm from "../ServiceCompany/ServiceCompanyCreateForm";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -9,8 +10,7 @@ const useStyles = makeStyles((theme) => ({
         flexWrap: "wrap",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#cfe8fc',
-        height: '100vh'
+        backgroundColor: '#DCCFCF'
     }
 }));
 
@@ -21,7 +21,7 @@ function Home(){
     const [serviceCompaniesList, setServiceCompaniesList] = useState([]);
     const classes = useStyles();
 
-    useEffect(() => {
+    const refreshServiceCompany = () => {
         fetch("/service-companies")
             .then(res => res.json())
             .then(
@@ -35,8 +35,11 @@ function Home(){
                     setError(error);
                 }
             )
+    }
 
-    }, [])
+    useEffect(() => {
+        refreshServiceCompany();
+    }, [serviceCompaniesList])
 
     if (error) {
         return <div > Error!!! < /div>;
@@ -45,16 +48,14 @@ function Home(){
     } else {
         return (
 
-            <div className="container">
-
-                    <Container fixed className={classes.container}>
-
+                    <div className={classes.container}>
+                <ServiceCompanyCreateForm title={"ddddddd"} companyId={1} companyName={"adasf"} description={"adfasdfasdfadsfasdf"} price={"23"} duration={"40"} refreshServiceCompany={refreshServiceCompany}/>
                 {serviceCompaniesList.map(serviceCompany => (
-                    <ServiceCompany title={serviceCompany.name} companyId={serviceCompany.companyId} companyName={serviceCompany.companyName} description={serviceCompany.description} price={serviceCompany.price} duration={serviceCompany.duration}></ServiceCompany>
+                    <ServiceCompany title={serviceCompany.name} companyId={serviceCompany.companyId} companyName={serviceCompany.companyName}
+                    description={serviceCompany.description} price={serviceCompany.price} duration={serviceCompany.duration}></ServiceCompany>
                 ))
-                } </Container>
+                } </div>
 
-            </div>
         );
     }
 }

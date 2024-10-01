@@ -33,3 +33,6 @@ Start des React-Projekts:
 npm start (im Verzeichnis des Projekts)
 
 Es wird ein Versuch mit React gestartet, um auch React zu lernen.
+
+Folgender Annotation wird verwendet, um die ID durch die Datenbank zu generieren:
+@GeneratedValue(strategy = GenerationType.IDENTITY)

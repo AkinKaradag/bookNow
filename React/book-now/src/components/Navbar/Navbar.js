@@ -41,6 +41,7 @@ function Navbar() {
                         <Typography variant="h6" component="div">
                         <Link className={classes.link} to={{pathname : 'users/' + userId}}>Users</Link>
                         </Typography>
+
                     </Toolbar>
                 </AppBar>
             </Box>

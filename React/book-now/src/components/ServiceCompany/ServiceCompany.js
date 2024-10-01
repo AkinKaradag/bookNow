@@ -15,6 +15,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {styled} from "@mui/material";
 import {IconButtonProps} from "@mui/material/IconButton";
 import {makeStyles} from "@mui/styles";
+import {Link} from "react-router-dom";
+
 
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -71,19 +73,26 @@ function ServiceCompany(props) {
     const {title, description, price, duration, companyId, companyName} = props;
     const [expanded, setExpanded] = React.useState(false);
     const classes = useStyle();
+    const [liked, setLiked] = useState(false);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+
+    const handleLike = () => {
+        setLiked(!liked);
+    }
 
     return(
         <div className="serviceContainer">
             <Card className={classes.root}>
                 <CardHeader
                     avatar={
+                        <Link className={classes.link} to={{pathname : 'companies/' + companyId}}>
                         <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
                             {companyName.charAt(0).toUpperCase()}
                         </Avatar>
+                        </Link>
                     }
 
                     title={title}
@@ -96,8 +105,8 @@ function ServiceCompany(props) {
                     </Typography>
                 </CardContent>
                 <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
+                    <IconButton onClick={handleLike} aria-label="add to favorites">
+                        <FavoriteIcon style={liked? {color: "red"}: null}/>
                     </IconButton>
                     <IconButton aria-label="share">
                         <ShareIcon />
