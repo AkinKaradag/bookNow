@@ -48,6 +48,10 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+    public UserModel findByName(String userName) {
+        return userRepository.findByName(userName);
+    }
+
 
     // Weitere Methoden für Update, Delete usw.
 }
