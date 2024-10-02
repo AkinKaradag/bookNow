@@ -2,6 +2,7 @@ package bookNow.Controller;
 
 import bookNow.Model.UserModel;
 import bookNow.Requests.UserRequest;
+import bookNow.Response.AuthResponse;
 import bookNow.Security.JwtTokenProvider;
 import bookNow.Service.UserService;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.regex.Pattern;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -28,6 +31,9 @@ public class AuthenticationController {
 
     private PasswordEncoder passwordEncoder;
 
+    private static final String EMAIL_REGEX = "^(.+)@(.+)$";
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+
     public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -36,25 +42,39 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserRequest loginRequest) {
+    public AuthResponse login(@RequestBody UserRequest loginRequest) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
         Authentication auth = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
         String jwtToken = jwtTokenProvider.generateJwtToken(auth);
-        return "Bearer " + jwtToken;
+        UserModel user = userService.findByName(loginRequest.getUsername());
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setMessage("Bearer " + jwtToken);
+        authResponse.setUserId(user.getId());
+        return authResponse;
     }
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> register (@RequestBody UserRequest registerRequest){
+    public ResponseEntity<AuthResponse> register (@RequestBody UserRequest registerRequest){
+        AuthResponse authResponse = new AuthResponse();
        if (userService.findByName(registerRequest.getUsername()) != null) {
-             return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
-         } else {
+           authResponse.setMessage("Username already exists");
+             return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+         } else if(userService.findByEmail(registerRequest.getEmail()) != null) {
+           authResponse.setMessage("Email already exists");
+           return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+       } else if(!EMAIL_PATTERN.matcher(registerRequest.getEmail()).matches()) {
+           authResponse.setMessage("Invalid email");
+           return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+       } else {
        UserModel user = new UserModel();
        user.setName(registerRequest.getUsername());
+       user.setEmail(registerRequest.getEmail());
        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
        userService.createUser(user);
-       return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+       authResponse.setMessage("Registration successful");
+       return new ResponseEntity<>(authResponse, HttpStatus.OK);
 
 
             }

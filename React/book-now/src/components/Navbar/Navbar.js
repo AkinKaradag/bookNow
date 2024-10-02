@@ -1,5 +1,5 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {makeStyles} from "@mui/styles";
+import {LockOpen} from "@mui/icons-material";
 
 
 const useStyle = makeStyles((theme) => ({
@@ -18,9 +19,18 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 function Navbar() {
-    let userId = 5;
     const classes = useStyle();
+    let history = useHistory();
+
+    const onClick = () => {
+        localStorage.removeItem("tokenKey")
+        localStorage.removeItem("currentUser")
+        localStorage.removeItem("userName")
+        history.go(0)
+    }
+
     return(
+
 
         <div>
             <Box sx={{ flexGrow: 1 }}>
@@ -39,7 +49,10 @@ function Navbar() {
                             <Link className={classes.link} to="/">Home</Link>
                         </Typography>
                         <Typography variant="h6" component="div">
-                        <Link className={classes.link} to={{pathname : 'users/' + userId}}>Users</Link>
+                            {localStorage.getItem("currentUser") == null ? <Link className={classes.link} to="/auth">Sign in</Link>:
+                               <div><IconButton className={classes.link} onClick={onClick}><LockOpen></LockOpen></IconButton>
+                        <Link className={classes.link} to={{pathname : 'users/' + localStorage.getItem("currentUser")}}>Profile</Link>
+                               </div>}
                         </Typography>
 
                     </Toolbar>

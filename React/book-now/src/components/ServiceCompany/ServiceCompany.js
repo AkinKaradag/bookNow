@@ -74,6 +74,7 @@ function ServiceCompany(props) {
     const [expanded, setExpanded] = React.useState(false);
     const classes = useStyle();
     const [liked, setLiked] = useState(false);
+    let disabled = localStorage.getItem("currentUser") == null;
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -105,9 +106,10 @@ function ServiceCompany(props) {
                     </Typography>
                 </CardContent>
                 <CardActions disableSpacing>
-                    <IconButton onClick={handleLike} aria-label="add to favorites">
+                    <IconButton onClick={handleLike} disabled aria-label="add to favorites">
                         <FavoriteIcon style={liked? {color: "red"}: null}/>
                     </IconButton>
+
                     <IconButton aria-label="share">
                         <ShareIcon />
                     </IconButton>

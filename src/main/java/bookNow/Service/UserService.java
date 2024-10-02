@@ -52,6 +52,9 @@ public class UserService {
         return userRepository.findByName(userName);
     }
 
+    public UserModel findByEmail(String email) { return userRepository.findByEmail(email);
+    }
+
 
     // Weitere Methoden für Update, Delete usw.
 }
