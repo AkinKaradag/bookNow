@@ -1,5 +1,6 @@
 package bookNow.Security;
 
+import bookNow.Model.UserType;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -19,7 +20,9 @@ public class JwtTokenProvider {
     @Value("${bookNow.app.expires.in}")
     private long EXPIRES_IN;
 
-    SecretKey key = Keys.hmacShaKeyFor(APP_SECRET.getBytes());
+    private SecretKey getKey() {
+        return Keys.hmacShaKeyFor(APP_SECRET.getBytes());
+    }
 
     public String generateJwtToken(Authentication auth) {
 
@@ -28,17 +31,23 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .claim("id", Long.toString(userDetails.getId()))
+                .claim("userType", userDetails.getUserType().toString())
                 .claim("issuedAt", new Date())
                 .claim("expiration", expireDate)
-                .signWith(key)
+                .signWith(getKey())
                 .compact();
     }
 
 
     Long getUserIdFromJwt(String token) {
 
-        Claims claim = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        Claims claim = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
         return Long.parseLong(claim.getSubject());
+    }
+
+    public UserType getUserTypeFromJwt(String token) {
+        Claims claim = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
+        return UserType.valueOf(claim.get("userType", String.class));
     }
 
     boolean validateToken(String token) {
@@ -53,7 +62,7 @@ public class JwtTokenProvider {
     }
 
     private boolean isTokenExpired(String token) {
-        Date expiration = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getExpiration();
+        Date expiration = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload().getExpiration();
         return expiration.before(new Date());
     }
 

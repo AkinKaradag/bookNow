@@ -1,9 +1,11 @@
 package bookNow.Model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "companies")
 public class CompanyModel {
@@ -18,11 +20,13 @@ public class CompanyModel {
 
     private String companyCity;
 
-    private String companyPostalCode;
+    private int companyPostalCode;
 
-    private String phoneNumber;
+    private int phoneNumber;
 
     private String description;
+
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private UserType userType; // Enum für Endnutzer und Firmenkonto
@@ -61,19 +65,19 @@ public class CompanyModel {
         this.companyCity = companyCity;
     }
 
-    public String getCompanyPostalCode() {
+    public int getCompanyPostalCode() {
         return companyPostalCode;
     }
 
-    public void setCompanyPostalCode(String companyPostalCode) {
+    public void setCompanyPostalCode(int companyPostalCode) {
         this.companyPostalCode = companyPostalCode;
     }
 
-    public String getPhoneNumber() {
+    public int getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(int phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

@@ -51,7 +51,6 @@ function Home(){
                     <div className={classes.container}>
                         {localStorage.getItem("currentUser") == null? "":
                             <ServiceCompanyCreateForm title={"ddddddd"} companyId={1} companyName={"adasf"} description={"adfasdfasdfadsfasdf"} price={"23"} duration={"40"} refreshServiceCompany={refreshServiceCompany}/> }
-
                 {serviceCompaniesList.map(serviceCompany => (
                     <ServiceCompany title={serviceCompany.name} companyId={serviceCompany.companyId} companyName={serviceCompany.companyName}
                     description={serviceCompany.description} price={serviceCompany.price} duration={serviceCompany.duration}></ServiceCompany>

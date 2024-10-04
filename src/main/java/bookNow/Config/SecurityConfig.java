@@ -79,6 +79,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/service-companies").permitAll()
                 .requestMatchers(HttpMethod.GET, "/service-companies/*").permitAll()
                 .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                 .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable);

@@ -1,6 +1,8 @@
 package bookNow.Security;
 
+import bookNow.Model.CompanyModel;
 import bookNow.Model.UserModel;
+import bookNow.Model.UserType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,12 +21,14 @@ public class JwtUserDetails implements UserDetails {
     private Long id;
     private String username;
     private String password;
+    private UserType userType;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public JwtUserDetails(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public JwtUserDetails(Long id, String username, String password, UserType userType, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.userType = userType;
         this.authorities = authorities;
     }
 
@@ -35,8 +39,21 @@ public class JwtUserDetails implements UserDetails {
                         user.getId(),
                         user.getName(),
                         user.getPassword(),
+                        user.getUserType(),
                         authorities
                 );
+    }
+
+    public static JwtUserDetails build(CompanyModel company) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("company"));
+        return new JwtUserDetails(
+                company.getCompanyId(),
+                company.getCompanyName(),
+                company.getPassword(),
+                UserType.COMPANYUSER,
+                authorities
+        );
     }
 
 

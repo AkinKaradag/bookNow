@@ -1,6 +1,7 @@
 package bookNow.Service;
 
 import bookNow.Model.CompanyModel;
+import bookNow.Model.UserModel;
 import bookNow.Repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class CompanyService {
             foundCompany.setCompanyName(updatedCompany.getCompanyName());
             foundCompany.setCompanyAddress(updatedCompany.getCompanyAddress());
             foundCompany.setCompanyCity(updatedCompany.getCompanyCity());
-            foundCompany.setPhoneNumber(updatedCompany.getPhoneNumber());
+            foundCompany.setCompanyPostalCode(updatedCompany.getCompanyPostalCode());
             foundCompany.setPhoneNumber(updatedCompany.getPhoneNumber());
             foundCompany.setDescription(updatedCompany.getDescription());
             foundCompany.setUserType(updatedCompany.getUserType());
@@ -52,4 +53,7 @@ public class CompanyService {
         companyRepository.deleteById(companyId);
     }
 
+    public CompanyModel findByName(String userName) {
+        return companyRepository.findByName(userName);
+    }
 }

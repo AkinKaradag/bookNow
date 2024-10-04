@@ -1,5 +1,5 @@
 import React from "react";
-import {Link, useHistory} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -20,13 +20,13 @@ const useStyle = makeStyles((theme) => ({
 
 function Navbar() {
     const classes = useStyle();
-    let history = useHistory();
+    let history = useNavigate();
 
     const onClick = () => {
-        localStorage.removeItem("tokenKey")
-        localStorage.removeItem("currentUser")
-        localStorage.removeItem("userName")
-        history.go(0)
+        localStorage.removeItem("tokenKey");
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("userName");
+        //history("/auth/login");
     }
 
     return(
@@ -49,10 +49,13 @@ function Navbar() {
                             <Link className={classes.link} to="/">Home</Link>
                         </Typography>
                         <Typography variant="h6" component="div">
-                            {localStorage.getItem("currentUser") == null ? <Link className={classes.link} to="/auth">Sign in</Link>:
+                            {localStorage.getItem("currentUser") == null ? <Link className={classes.link} to="/auth/login">Sign in</Link>:
                                <div><IconButton className={classes.link} onClick={onClick}><LockOpen></LockOpen></IconButton>
                         <Link className={classes.link} to={{pathname : 'users/' + localStorage.getItem("currentUser")}}>Profile</Link>
                                </div>}
+                        </Typography>
+                        <Typography variant="h6" component="div">
+                            <Link className={classes.link} to="/auth/register">Sign up</Link>
                         </Typography>
 
                     </Toolbar>

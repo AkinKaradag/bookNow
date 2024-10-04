@@ -1,76 +1,201 @@
 import React, {useState} from 'react';
 import {Button, FormControl, FormHelperText, Input, InputLabel} from "@mui/material";
-import user from "../User/User";
+import {Link} from "react-router-dom";
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 
 function Register(){
 
-    const [username, setUsername] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+        companyName: "",
+        companyAddress: "",
+        companyCity: "",
+        companyPostalCode: "",
+        phoneNumber: "",
+        description: "",
+        usertype: "PRIVATEUSER"
 
-    const handleUsername = (value) => {
-        setUsername(value)
+    })
+
+    const options = ['PRIVATUSER', 'COMPANYUSER'];
+    const [value, setValue] = React.useState(options[0]);
+    const [inputValue, setInputValue] = React.useState('');
+
+    const handleInput = (i) => {
+        const {name, value} = i.target
+        setFormData({
+            ...formData,
+        [name]: value
+        });
     }
 
-    const handleEmail = (value) => {
-        setEmail(value)
-    }
-
-    const handlePassword = (value) => {
-        setPassword(value)
-    }
 
     const sendRequest = (path) => {
+
+        const finalFromData = {
+            ...formData,
+            companyPostalCode: formData.companyPostalCode !== "" ? parseInt(formData.companyPostalCode) : null,
+            phoneNumber: formData.phoneNumber !== "" ? parseInt(formData.phoneNumber) : null
+        }
+
         fetch("/auth/"+path, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                name: username,
-                email: email,
-                password: password
-            }),
+            body: JSON.stringify(finalFromData),
         })
             .then((res) => res.json())
-            .then((result) => {localStorage.setItem("tokenKey", result.message);
-                                    localStorage.setItem("currentUser", result.userId);
-                                    localStorage.setItem("userName",username)})
-            .then((err) => console.log(err))
+            .then((result) => {
+                if(result.usertype === 'COMPANYUSER') {
+                    localStorage.setItem("companyId", result.companyId);
+                    localStorage.setItem("companyName", formData.companyName)
+                } else {
+                    localStorage.setItem("currentUser", result.userId);
+                    localStorage.setItem("userName",formData.name);
+                }
+                localStorage.setItem("tokenKey", result.message);
+
+                })
+            .catch((err) => console.log(err))
     }
 
     const handleButton = (path) => {
         sendRequest(path)
-        setUsername("")
-        setEmail("")
-        setPassword("")
-        console.log(localStorage)
+        setFormData({
+            name: "",
+            email: "",
+            password: "",
+            companyName: "",
+            companyAddress: "",
+            companyCity: "",
+            companyPostalCode: "",
+            phoneNumber: "",
+            description: "",
+            usertype: "PRIVATEUSER"
+
+        });
     }
 
 
     return(
         <FormControl>
-            <InputLabel>Username</InputLabel>
-            <Input onChange = {(i) => handleUsername(i.target.value)}/>
-            <InputLabel style={{top: 80}}>E-Mail</InputLabel>
-            <Input style={{top:40}}
-                   onChange = {(i) => handleEmail(i.target.value)}/>
-            <InputLabel style={{top: 80}}>Passwort</InputLabel>
-            <Input style={{top:40}}
-            onChange = {(i) => handlePassword(i.target.value)}/>
-            <Button variant="contained"
-                style = {{marginTop: 60,
-                background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 60%)',
-                color: "white"}}
-                onClick={() => handleButton("register")}>Register</Button>
 
-            <FormHelperText style={{margin: 20}}>Are you already registered?</FormHelperText>
+
+            {formData.usertype === 'COMPANYUSER' ? (
+                <>
+                <InputLabel style={{top:40}}>Company Name</InputLabel>
+                <Input style={{top:40}}
+                name="companyName"
+                onChange = {handleInput}
+                value={formData.companyName}
+                />
+
+                <InputLabel style={{top:110}}>Company Address</InputLabel>
+                <Input style={{top:60}}
+                       name="companyAddress"
+                       onChange = {handleInput}
+                       value={formData.companyAddress}
+                />
+
+                <InputLabel style={{top:175}}>Company City</InputLabel>
+                <Input style={{top:80}}
+                       name="companyCity"
+                       onChange = {handleInput}
+                       value={formData.companyCity}
+                />
+
+                <InputLabel style={{top:240}}>Company Postal Code</InputLabel>
+                <Input style={{top:100}}
+                       name="companyPostalCode"
+                       onChange = {handleInput}
+                       value={formData.companyPostalCode}
+                />
+
+                <InputLabel style={{top:310}}>Phone Number</InputLabel>
+                <Input style={{top:120}}
+                       name="phoneNumber"
+                       onChange = {handleInput}
+                       value={formData.phoneNumber}
+                />
+
+                <InputLabel style={{top:380}}>Description</InputLabel>
+                <Input style={{top:140}}
+                       name="description"
+                       onChange = {handleInput}
+                       value={formData.description}
+                />
+
+                <InputLabel style={{top:450}}>Password</InputLabel>
+                <Input style={{top:160}}
+                       name="password"
+                       onChange = {handleInput}
+                       value={formData.password}
+                />
+
+
+                </>
+            ): (
+                <>
+                <InputLabel style={{top:40}}>Username</InputLabel>
+                <Input style={{top:40}}
+                name="name"
+                onChange = {handleInput}
+                value={formData.name}
+                />
+
+                <InputLabel style={{top:110}}>E-Mail</InputLabel>
+                <Input style={{top:60}}
+                       name="email"
+                       onChange = {handleInput}
+                       value={formData.email}
+                />
+
+                    <InputLabel style={{top:180}}>Password</InputLabel>
+                    <Input style={{top:80}}
+                           name="password"
+                           onChange = {handleInput}
+                           value={formData.password}
+                    />
+
+
+                </>
+            )}
+
+            <Autocomplete
+
+                value={formData.usertype}
+                onChange={(event, newValue) => {
+                    setFormData({
+                        ...formData,
+                        usertype: newValue
+                    });
+                }}
+                inputValue={inputValue}
+                onInputChange={(event, newInputValue) => {
+                    setInputValue(newInputValue);
+                }}
+                id="controllable-states-demo"
+                options={options}
+                sx={{ width: 300 }}
+                renderInput={(params) => <TextField style={{top: 190}} {...params} label="User-Typ" />}
+            />
+
+
+
+
             <Button variant="contained"
-                    style = {{marginTop: 2,
+                    style = {{marginTop: 210,
                         background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 60%)',
                         color: "white"}}
-                        onClick={() => handleButton("login")}>Login</Button>
+                    onClick={() => handleButton("register")}>Register</Button>
+
+            <FormHelperText style={{margin: 5}}>Are you already registered?</FormHelperText>
+            <Link style={{marginTop: 20}} to="/auth/login">Sign in</Link>
         </FormControl>
     )
 }

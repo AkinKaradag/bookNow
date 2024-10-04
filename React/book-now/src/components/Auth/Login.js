@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
 import {Button, FormControl, FormHelperText, Input, InputLabel} from "@mui/material";
+import {Link, Navigate, useNavigate} from "react-router-dom";
 
 
 function Login(){
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    let navigate = useNavigate();
 
     const handleUsername = (value) => {
         setUsername(value)
@@ -16,7 +18,7 @@ function Login(){
     }
 
     const sendRequest = (path) => {
-        fetch("/auth/"+path, {
+        fetch("/auth/" + path, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -27,10 +29,13 @@ function Login(){
             }),
         })
             .then((res) => res.json())
-            .then((result) => {localStorage.setItem("tokenKey", result.message);
+            .then((result) => {
+                localStorage.setItem("tokenKey", result.message);
                 localStorage.setItem("currentUser", result.userId);
-                localStorage.setItem("userName",username)})
-            .then((err) => console.log(err))
+                localStorage.setItem("userName", username)
+                navigate("/");
+            })
+            .catch((err) => console.log(err))
     }
 
     const handleButton = (path) => {
@@ -42,7 +47,7 @@ function Login(){
 
 
     return(
-        <FormControl>
+        <FormControl style={{top: 40}}>
             <InputLabel>Username</InputLabel>
             <Input onChange = {(i) => handleUsername(i.target.value)}/>
             <InputLabel style={{top: 80}}>Passwort</InputLabel>
@@ -50,12 +55,14 @@ function Login(){
                    onChange = {(i) => handlePassword(i.target.value)}/>
 
 
-            <FormHelperText style={{margin: 20}}>Bitte Einloggen</FormHelperText>
+            <FormHelperText style={{margin: 20}}></FormHelperText>
             <Button variant="contained"
-                    style = {{marginTop: 2,
+                    style = {{marginTop: 15,
                         background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 60%)',
                         color: "white"}}
                     onClick={() => handleButton("login")}>Login</Button>
+            <FormHelperText style={{margin: 20}}>Don't have an Account?</FormHelperText>
+            <Link style={{marginTop: 20}} to="/auth/register">Sign up</Link>
         </FormControl>
     )
 }

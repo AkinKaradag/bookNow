@@ -1,5 +1,6 @@
 package bookNow.Security;
 
+import bookNow.Model.UserType;
 import bookNow.Service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,9 +31,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwtToken = extractJwtFromRequest(request);
             if(StringUtils.hasText(jwtToken) && jwtTokenProvider.validateToken(jwtToken)){
                 // Get user id from token
-                Long userId = jwtTokenProvider.getUserIdFromJwt(jwtToken);
+                Long id = jwtTokenProvider.getUserIdFromJwt(jwtToken);
+
+                UserType userType = jwtTokenProvider.getUserTypeFromJwt(jwtToken);
                 // Get user details from user id
-                UserDetails userDetails = userDetailsService.loadUserById(userId);
+                UserDetails userDetails = null;
+
+                if(userType == UserType.COMPANYUSER) {
+                    userDetails = userDetailsService.loadCompanyById(id);
+                } else {
+                    userDetails = userDetailsService.loadUserById(id);
+                }
+
                 if(userDetails != null) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
