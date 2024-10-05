@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public UserDetails loadCompanyByCompanyName(String companyName) {
-        CompanyModel company = companyRepository.findByName(companyName);
+        CompanyModel company = companyRepository.findByCompanyName(companyName);
 
         return JwtUserDetails.build(company);
     }

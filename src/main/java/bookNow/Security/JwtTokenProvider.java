@@ -29,6 +29,10 @@ public class JwtTokenProvider {
         JwtUserDetails userDetails = (JwtUserDetails) auth.getPrincipal();
         Date expireDate = new Date(new Date().getTime() + EXPIRES_IN);
 
+        if (userDetails.getUserType() == null) {
+            throw new IllegalArgumentException("User type not set");
+        }
+
         return Jwts.builder()
                 .claim("id", Long.toString(userDetails.getId()))
                 .claim("userType", userDetails.getUserType().toString())

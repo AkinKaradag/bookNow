@@ -54,6 +54,6 @@ public class CompanyService {
     }
 
     public CompanyModel findByName(String userName) {
-        return companyRepository.findByName(userName);
+        return companyRepository.findByCompanyName(userName);
     }
 }

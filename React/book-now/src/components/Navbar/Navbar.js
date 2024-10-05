@@ -43,18 +43,25 @@ function Navbar() {
                             aria-label="menu"
                             sx={{ mr: 2 }}
                         >
+
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign="left">
                             <Link className={classes.link} to="/">Home</Link>
                         </Typography>
-                        <Typography variant="h6" component="div">
+
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign="Center">
+                            <Link className={classes.link} to="service-companies/">Services</Link>
+                        </Typography>
+
+                        <Typography variant="h6" component="div" style={{marginRight: 20, fontSize: 15}}>
                             {localStorage.getItem("currentUser") == null ? <Link className={classes.link} to="/auth/login">Sign in</Link>:
                                <div><IconButton className={classes.link} onClick={onClick}><LockOpen></LockOpen></IconButton>
                         <Link className={classes.link} to={{pathname : 'users/' + localStorage.getItem("currentUser")}}>Profile</Link>
                                </div>}
                         </Typography>
-                        <Typography variant="h6" component="div">
+
+                        <Typography variant="h6" component="div" style={{fontSize: 15}}>
                             <Link className={classes.link} to="/auth/register">Sign up</Link>
                         </Typography>
 

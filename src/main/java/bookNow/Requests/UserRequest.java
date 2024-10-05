@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 public class UserRequest {
 
-    String name;
-    String email;
-    String password;
-    UserType userType;
+    private String name;
+    private String email;
+    private String password;
+    private UserType userType;
 
 }

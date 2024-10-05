@@ -112,7 +112,9 @@ public class AuthenticationController {
             company.setCompanyAddress(registerRequest.getCompanyAddress());
             company.setCompanyCity(registerRequest.getCompanyCity());
             company.setCompanyPostalCode(registerRequest.getCompanyPostalCode());
-
+            company.setPhoneNumber(registerRequest.getPhoneNumber());
+            company.setDescription(registerRequest.getDescription());
+            company.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
             company.setUserType(registerRequest.getUserType());
             companyService.createCompany(company);
             authResponse.setMessage("Registration successful");

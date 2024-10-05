@@ -7,6 +7,7 @@ import User from "./components/User/User";
 import Navbar from "./components/Navbar/Navbar";
 import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";
+import ServiceCompany from "./components/ServiceCompany/ServiceCompany";
 
 function App() {
     return (
@@ -17,11 +18,10 @@ function App() {
                     <Route path="/" element={<Home/>}></Route>
                     <Route path="users/:userId" element={<User/>}></Route>
                     <Route path="/auth/login" element={localStorage.getItem("currentUser") != null ? <Navigate to="/"/>: <Login/>}>
-
                 </Route>
-                    <Route path="/auth/register" element={localStorage.getItem("currentUser") != null ? <Navigate to="/Login"/>: <Register/>}>
-
+                    <Route path="/auth/register" element={localStorage.getItem("currentUser") != null ? <Navigate to="auth/login"/>: <Register/>}>
                     </Route>
+                    <Route path="service-companies/" element={<ServiceCompany/>}></Route>
                 </Routes>
             </BrowserRouter>
         </div>

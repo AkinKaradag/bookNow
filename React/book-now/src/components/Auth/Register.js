@@ -17,12 +17,11 @@ function Register(){
         companyPostalCode: "",
         phoneNumber: "",
         description: "",
-        usertype: "PRIVATEUSER"
+        userType: "PRIVATEUSER"
 
     })
 
-    const options = ['PRIVATUSER', 'COMPANYUSER'];
-    const [value, setValue] = React.useState(options[0]);
+    const options = ['PRIVATEUSER', 'COMPANYUSER'];
     const [inputValue, setInputValue] = React.useState('');
 
     const handleInput = (i) => {
@@ -34,24 +33,35 @@ function Register(){
     }
 
 
-    const sendRequest = (path) => {
+    const sendRequest = () => {
+        const path = formData.userType === "COMPANYUSER" ? "/company" : "/private";
 
-        const finalFromData = {
-            ...formData,
+        const finalFormData = formData.userType === "COMPANYUSER" ?{
+            companyName: formData.companyName,
+            companyAddress: formData.companyAddress,
+            companyCity: formData.companyCity,
             companyPostalCode: formData.companyPostalCode !== "" ? parseInt(formData.companyPostalCode) : null,
-            phoneNumber: formData.phoneNumber !== "" ? parseInt(formData.phoneNumber) : null
+            phoneNumber: formData.phoneNumber,
+            description: formData.description,
+            password: formData.password,
+            userType: formData.userType
+        } : {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            userType: formData.userType
         }
 
-        fetch("/auth/"+path, {
+        fetch("/auth/register"+path, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(finalFromData),
+            body: JSON.stringify(finalFormData),
         })
             .then((res) => res.json())
             .then((result) => {
-                if(result.usertype === 'COMPANYUSER') {
+                if(result.userType === 'COMPANYUSER') {
                     localStorage.setItem("companyId", result.companyId);
                     localStorage.setItem("companyName", formData.companyName)
                 } else {
@@ -64,8 +74,8 @@ function Register(){
             .catch((err) => console.log(err))
     }
 
-    const handleButton = (path) => {
-        sendRequest(path)
+    const handleButton = () => {
+        sendRequest()
         setFormData({
             name: "",
             email: "",
@@ -76,7 +86,7 @@ function Register(){
             companyPostalCode: "",
             phoneNumber: "",
             description: "",
-            usertype: "PRIVATEUSER"
+            userType: "PRIVATEUSER"
 
         });
     }
@@ -86,7 +96,7 @@ function Register(){
         <FormControl>
 
 
-            {formData.usertype === 'COMPANYUSER' ? (
+            {formData.userType === 'COMPANYUSER' ? (
                 <>
                 <InputLabel style={{top:40}}>Company Name</InputLabel>
                 <Input style={{top:40}}
@@ -168,11 +178,11 @@ function Register(){
 
             <Autocomplete
 
-                value={formData.usertype}
+                value={formData.userType}
                 onChange={(event, newValue) => {
                     setFormData({
                         ...formData,
-                        usertype: newValue
+                        userType: newValue
                     });
                 }}
                 inputValue={inputValue}
