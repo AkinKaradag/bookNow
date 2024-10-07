@@ -12,10 +12,12 @@ function Login(){
         companyName: "",
         password: "",
         userType: "PRIVATEUSER"
-    })
+    });
 
     const options = ['PRIVATEUSER' , 'COMPANYUSER'];
     const [inputValue, setInputValue] = React.useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleInput = (i) => {
         const {name, value} = i.target
@@ -23,12 +25,11 @@ function Login(){
             ...formData,
             [name]: value
         });
-    }
+    };
 
-    let navigate = useNavigate();
 
     const sendRequest = () => {
-        const path = formData.userType === "COMPANYUSER" ? "/company" : "/private";
+        const path = formData.userType === "COMPANYUSER" ? "/auth/login/company" : "/auth/login/private";
 
         const finalFromData= formData.userType === "COMPANYUSER" ?{
             companyName: formData.companyName,
@@ -39,38 +40,50 @@ function Login(){
             password: formData.password,
             userType: formData.userType
         }
-        fetch("/auth/login" + path, {
+
+        if ((!formData.name && formData.userType === "PRIVATEUSER") || (!formData.companyName && formData.userType === "COMPANYUSER") || !formData.password) {
+            setError("Please fill in all the required fields.");
+            return;
+        }
+
+        fetch(path, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(finalFromData),
         })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) {
+                    console.error("Error:", res.status, res.statusText);
+                    throw new Error("Login failed.");
+                }
+                    return res.json()
+            })
             .then((result) => {
+
                 if(result.userType === 'COMPANYUSER') {
                     localStorage.setItem("companyId", result.companyId);
-                    localStorage.setItem("companyName", formData.companyName)
+                    localStorage.setItem("companyName", formData.companyName);
+                    localStorage.setItem("userType", result.userType);
                 } else {
-                    localStorage.setItem("currentUser", result.userId);
-                    localStorage.setItem("userName", formData.name)
+                    localStorage.setItem("currentUser", result.id);
+                    localStorage.setItem("userName", formData.name);
+                    localStorage.setItem("userType", result.userType);
                 }
                 localStorage.setItem("tokenKey", result.message);
 
 
                 navigate("/");
             })
-            .catch((err) => console.log(err))
+            .catch((err) => {
+                console.log(err);
+                setError("Login failed. Please check your credentials.");
+            })
     }
 
     const handleButton = (path) => {
         sendRequest(path)
-        setFormData({
-            name: "",
-            companyName: "",
-            password: "",
-            userType: "PRIVATEUSER"
-        });
     }
 
 
@@ -90,6 +103,7 @@ function Login(){
                     <Input
                         style={{top:60}}
                         name="password"
+                        type="password"
                         onChange={handleInput}
                         value={formData.password}
                     />
@@ -109,6 +123,7 @@ function Login(){
                     <Input
                     style={{top:60}}
                     name="password"
+                    type="password"
                     onChange={handleInput}
                     value={formData.password}
                     />
@@ -134,9 +149,9 @@ function Login(){
             />
 
 
-            <FormHelperText style={{marginTop: 150}}></FormHelperText>
+            {error && <FormHelperText error style={{marginTop: 150}}>{error}</FormHelperText>}
             <Button variant="contained"
-                    style = {{marginTop: 15,
+                    style = {{marginTop: 155,
                         background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 60%)',
                         color: "white"}}
                     onClick={() => handleButton("login")}>Login</Button>

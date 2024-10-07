@@ -57,6 +57,7 @@ public class AuthenticationController {
         AuthResponse authResponse = new AuthResponse();
         authResponse.setMessage("Bearer " + jwtToken);
         authResponse.setId(user.getId());
+        authResponse.setUserType(user.getUserType());
         return authResponse;
     }
 
@@ -69,7 +70,8 @@ public class AuthenticationController {
         CompanyModel company = companyService.findByName(loginRequest.getCompanyName());
         AuthResponse authResponse = new AuthResponse();
         authResponse.setMessage("Bearer " + jwtToken);
-        authResponse.setId(company.getCompanyId());
+        authResponse.setCompanyId(company.getCompanyId());
+        authResponse.setUserType(company.getUserType());
         return authResponse;
     }
 

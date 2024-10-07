@@ -6,12 +6,14 @@ import CardContent from '@mui/material/CardContent';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
-import {Button, InputAdornment, OutlinedInput, styled} from "@mui/material";
+import {Button, FormControl, FormHelperText, InputAdornment, InputLabel, OutlinedInput, styled} from "@mui/material";
 import {makeStyles} from "@mui/styles";
 import {Link} from "react-router-dom";
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 
 
 const useStyle = makeStyles((theme) => ({
@@ -38,13 +40,34 @@ const useStyle = makeStyles((theme) => ({
 
 function ServiceCompanyCreateForm(props) {
 
-    const {price, duration, companyId, companyName, refreshServiceCompany} = props;
+    const {refreshServiceCompany} = props;
     const classes = useStyle();
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
     const [isSent, setIsSent] = useState(false);
 
-    const saveServiceCompany = () => {
+
+    const [formData, setFormData] = useState({
+        name: "",
+        description: "",
+        price: 0,
+        duration: 0
+    })
+
+    const handleInput = (i) => {
+        const {name, value} = i.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+        setIsSent(false);
+    }
+
+
+    const handleSubmit = () => {
+        const companyId = localStorage.getItem("companyId");
+        const dataToSend = {
+            ...formData,
+            companyId: companyId
+        };
         fetch("/service-companies",
             {
                 method: "POST",
@@ -52,101 +75,97 @@ function ServiceCompanyCreateForm(props) {
                     "Content-Type": "application/json",
                     "Authorization": localStorage.getItem("tokenKey"),
                 },
-                body: JSON.stringify({
-                    name: title,
-                    description: description,
-                }),
+                body: JSON.stringify(dataToSend),
             })
             .then((res) => res.json())
-            .catch((err) => console.log("error"))
-    }
+            .then(() => {
+                setIsSent(true);
+                setFormData({
+                    name: "",
+                    description: "",
+                    price: 0,
+                    duration: ''
+                });
+                refreshServiceCompany();
+            })
+            .catch((err) => console.log("error"));
+    };
 
-    const handleSubmit = () => {
-        saveServiceCompany();
-        setIsSent(true);
-        setTitle("");
-        setDescription("");
-        refreshServiceCompany();
-    }
-
-    const handleTitle = (value) => {
-        setTitle(value);
-        setIsSent(false);
-    }
-
-    const handleDescription = (value) => {
-        setDescription(value);
-        setIsSent(false);
-    }
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
-        isSent(false);
+        setIsSent(false);
     };
 
     return(
         <div>
-            <Snackbar
-                open={isSent}
-                autoHideDuration={1200}
-                onClose={handleClose}
-            >
-            <Stack sx={{ width: '100%' }} spacing={2}>
-                <Alert variant="outlined" severity="success">
-                    This is an outlined success Alert.
+            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                <div>
+
+                    <TextField
+                        name="name"
+                        label="name"
+                        value={formData.name}
+                        onChange={handleInput}
+                        sx={{m: 1, width: '25ch'}}
+                    />
+
+                    <TextField
+                        name="description"
+                        label="description"
+                        multiline
+                        rows={4}
+                        value={formData.description}
+                        onChange={handleInput}
+                        sx={{m: 1, width: '25ch'}}
+                    />
+
+
+                    <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                        <InputLabel htmlFor={"outlined-adornment-price"}>Price</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-price"
+                            name="price"
+                            value={formData.price}
+                            onChange={handleInput}
+                            startAdornment={<InputAdornment position="start">CHF</InputAdornment>}
+                            label="price"
+                            type="number"
+                        />
+                    </FormControl>
+
+                    <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                        <InputLabel htmlFor={"outlined-adornment-duration"}>Duration</InputLabel>
+                        <OutlinedInput
+                            id="outlined-adornment-duration"
+                            name="duration"
+                            value={formData.duration}
+                            onChange={handleInput}
+                            startAdornment={<InputAdornment position="start">min</InputAdornment>}
+                            label="duration"
+                            type="number"
+                        />
+                    </FormControl>
+
+                    <InputAdornment position = "end">
+                        <Button
+                            variant="contained"
+                            style = {{background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                                color: 'white'}}
+                            onClick={handleSubmit}
+                        >Senden</Button>
+                    </InputAdornment>
+                </div>
+
+            </Box>
+
+            <Snackbar open={isSent} autoHideDuration={3000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                    Service erfolgreich hinzugefügt!
                 </Alert>
-            </Stack>
             </Snackbar>
-            <Card className={classes.root}>
-                <CardHeader
-                    avatar={
-                        <Link className={classes.link} to={{pathname : 'companies/' + companyId}}>
-                            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                                {companyName.charAt(0).toUpperCase()}
-                            </Avatar>
-                        </Link>
-                    }
-
-                    title={<OutlinedInput id="outlined-adornment-amount"
-                    multiline
-                    placeholder="Title"
-                    inputProps={{maxSize: 55}}
-                    fullWidth
-                    value = {title}
-                    onChange = { (i) => handleTitle(i.target.value)}
-                    >
-
-                    </OutlinedInput>}
-                    subheader="September 14, 2016"
-                />
-
-                <CardContent>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        {<OutlinedInput id="outlined-adornment-amount"
-                            multiline
-                            placeholder="Description"
-                            inputProps={{maxSize: 500}}
-                            fullWidth
-                            value = {description}
-                            onChange = { (i) => handleDescription(i.target.value)}
-                            endAdornment={
-                                <InputAdornment position = "end">
-                                <Button
-                                    variant="conatined"
-                                    style = {{background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-                                    color: 'white'}}
-                                    onClick={handleSubmit}
-                                >Senden</Button>
-                                </InputAdornment>
-                                        }
-                        >
-                        </OutlinedInput>}
-                    </Typography>
-                </CardContent>
-
-            </Card>
 
         </div>
     )

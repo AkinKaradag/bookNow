@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import ServiceCompany from "../ServiceCompany/ServiceCompany";
 import Container from '@mui/material/Container';
 import {makeStyles} from "@mui/styles";
-import ServiceCompanyCreateForm from "../ServiceCompany/ServiceCompanyCreateForm";
+import ServiceCompanyCreateForm from "./ServiceCompanyCreateForm";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function Home(){
+function Services(){
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [serviceCompaniesList, setServiceCompaniesList] = useState([]);
@@ -48,11 +48,11 @@ function Home(){
     } else {
         return (
 
-                    <div className={classes.container}>
+            <div className={classes.container}>
 
                 {serviceCompaniesList.map(serviceCompany => (
                     <ServiceCompany title={serviceCompany.name} companyId={serviceCompany.companyId} companyName={serviceCompany.companyName}
-                    description={serviceCompany.description} price={serviceCompany.price} duration={serviceCompany.duration}></ServiceCompany>
+                                    description={serviceCompany.description} price={serviceCompany.price} duration={serviceCompany.duration}></ServiceCompany>
                 ))
                 } </div>
 
@@ -60,4 +60,4 @@ function Home(){
     }
 }
 
-export default Home;
+export default Services;

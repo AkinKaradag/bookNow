@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -20,7 +21,7 @@ public class ServiceCompanyModel {
 
     private String description;
 
-    private int price;
+    private BigDecimal price;
 
     private int duration;
 
@@ -56,11 +57,11 @@ public class ServiceCompanyModel {
         this.description = description;
     }
 
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

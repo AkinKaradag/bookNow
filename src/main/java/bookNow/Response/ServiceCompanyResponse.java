@@ -3,6 +3,8 @@ package bookNow.Response;
 import bookNow.Model.ServiceCompanyModel;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class ServiceCompanyResponse {
 
@@ -11,7 +13,7 @@ public class ServiceCompanyResponse {
     String companyName;
     String name;
     String description;
-    int price;
+    BigDecimal price;
     int duration;
 
     public ServiceCompanyResponse(ServiceCompanyModel entity){

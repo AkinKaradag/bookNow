@@ -26,11 +26,8 @@ public class ServiceCompanyService {
         this.companyService = companyService;
     }
 
-    public ServiceCompanyModel createServiceCompany(ServiceCompanyRequest newServiceCompany) {
-        CompanyModel company = companyService.findByCompanyId(newServiceCompany.getCompanyId());
-        if (company == null) {
-            return null;
-        } else {
+    public ServiceCompanyModel createServiceCompany(ServiceCompanyRequest newServiceCompany, CompanyModel company) {
+
             ServiceCompanyModel toSave = new ServiceCompanyModel();
             toSave.setName(newServiceCompany.getName());
             toSave.setDescription(newServiceCompany.getDescription());
@@ -38,7 +35,7 @@ public class ServiceCompanyService {
             toSave.setDuration(newServiceCompany.getDuration());
             toSave.setCompany(company);
             return serviceRepository.save(toSave);
-        }
+        
     }
 
     public List<ServiceCompanyResponse> getAllServiceCompanies(Optional<Long> companyId) {

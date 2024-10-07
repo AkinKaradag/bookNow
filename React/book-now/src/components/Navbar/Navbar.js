@@ -36,33 +36,32 @@ function Navbar() {
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
-                        <IconButton
-                            size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{ mr: 2 }}
-                        >
 
-                            <MenuIcon />
-                        </IconButton>
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign="left">
                             <Link className={classes.link} to="/">Home</Link>
                         </Typography>
 
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign="Center">
-                            <Link className={classes.link} to="service-companies/">Services</Link>
+                            <Link className={classes.link} to="/services">Services</Link>
+                        </Typography>
+
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign="Center">
+                            <Link className={classes.link} to="/create-service">Create Service</Link>
+                        </Typography>
+
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign="Center">
+                            <Link className={classes.link} to="appointments/">Appointments</Link>
                         </Typography>
 
                         <Typography variant="h6" component="div" style={{marginRight: 20, fontSize: 15}}>
-                            {localStorage.getItem("currentUser") == null ? <Link className={classes.link} to="/auth/login">Sign in</Link>:
+                            {localStorage.getItem("currentUser") == null ? <Link className={classes.link} to="/auth/login/">Sign in</Link>:
                                <div><IconButton className={classes.link} onClick={onClick}><LockOpen></LockOpen></IconButton>
                         <Link className={classes.link} to={{pathname : 'users/' + localStorage.getItem("currentUser")}}>Profile</Link>
                                </div>}
                         </Typography>
 
                         <Typography variant="h6" component="div" style={{fontSize: 15}}>
-                            <Link className={classes.link} to="/auth/register">Sign up</Link>
+                            <Link className={classes.link} to="/auth/register/">Sign up</Link>
                         </Typography>
 
                     </Toolbar>

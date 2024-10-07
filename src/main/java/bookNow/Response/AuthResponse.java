@@ -8,5 +8,6 @@ public class AuthResponse {
 
     String message;
     Long id;
+    Long companyId;
     UserType userType;
 }

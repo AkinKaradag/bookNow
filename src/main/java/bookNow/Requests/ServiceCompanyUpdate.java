@@ -3,6 +3,8 @@ package bookNow.Requests;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class ServiceCompanyUpdate {
 
@@ -10,7 +12,7 @@ public class ServiceCompanyUpdate {
 
     private String description;
 
-    private int price;
+    private BigDecimal price;
 
     private int duration;
 

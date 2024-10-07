@@ -7,6 +7,7 @@ import bookNow.Repository.UserRepository;
 import bookNow.Security.JwtUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
@@ -23,16 +24,29 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
+        // Prüfen, ob es sich um einen PrivateUser handelt
         UserModel user = userRepository.findByName(username);
+        if (user != null) {
+            return JwtUserDetails.build(user);
+        }
 
-        return JwtUserDetails.build(user);
+        // Falls kein normaler User gefunden wird, prüfen, ob es ein CompanyUser ist
+        CompanyModel company = companyRepository.findByCompanyName(username);
+        if (company != null) {
+            return JwtUserDetails.build(company);
+        }
+
+        throw new UsernameNotFoundException("User or Company not found with name/companyName: " + username);
     }
 
-    public UserDetails loadCompanyByCompanyName(String companyName) {
+
+
+
+    /*public UserDetails loadCompanyByCompanyName(String companyName) {
         CompanyModel company = companyRepository.findByCompanyName(companyName);
 
         return JwtUserDetails.build(company);
-    }
+    }*/
 
     public UserDetails loadUserById(Long id) {
         UserModel user = userRepository.findById(id).get();
