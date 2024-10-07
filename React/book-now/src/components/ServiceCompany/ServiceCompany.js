@@ -71,7 +71,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 function ServiceCompany(props) {
 
-    const {id, title, description, price, duration, companyId, companyName, refreshServiceCompany} = props;
+    const {serviceId, title, description, price, duration, companyId, companyName, refreshServiceCompany} = props;
     const [expanded, setExpanded] = React.useState(false);
     const classes = useStyle();
     const [liked, setLiked] = useState(false);
@@ -79,7 +79,6 @@ function ServiceCompany(props) {
     const [appointmentDate, setAppointmentDate] = useState('');
     const [appointmentTime, setAppointmentTime] = useState('');
     const userType = localStorage.getItem("userType");
-    const currentUser = localStorage.getItem("currentUser");
     const [editMode, setEditMode] = useState(false);
     const [updatedService, setUpdatedService] = useState({
         name: title,
@@ -109,10 +108,13 @@ function ServiceCompany(props) {
         const bookingData = {
             appointmentDate: format(new Date(appointmentDate), 'dd-MM-yyyy'),
             appointmentTime: appointmentTime,
-            serviceId: props.id,
+            serviceId: props.serviceId,
             userId: localStorage.getItem("currentUser"),
             companyId: companyId
         };
+
+        console.log("Service ID:", props.serviceId);
+        console.log("Booking Data:", bookingData);
 
         fetch("/appointments", {
             method: "POST",
@@ -145,7 +147,7 @@ function ServiceCompany(props) {
     };
 
     const handleSave = () => {
-        fetch(`service-companies/${id}`, {
+        fetch(`service-companies/${serviceId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -162,7 +164,7 @@ function ServiceCompany(props) {
     };
 
     const handleDelete = () => {
-        fetch(`/service-companies/${id}`, {
+        fetch(`/service-companies/${serviceId}`, {
             method:"DELETE",
             headers: {
                 "Authorization": localStorage.getItem("tokenKey"),
@@ -175,6 +177,10 @@ function ServiceCompany(props) {
             })
             .catch((err) => console.error("Delete failed", err));
     }
+
+    useEffect(() => {
+        console.log("ServiceId: ", serviceId);
+    }, [serviceId]);
 
     return(
         <div className="serviceContainer">

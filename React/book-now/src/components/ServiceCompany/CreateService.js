@@ -44,6 +44,7 @@ function CreateService() {
         })
             .then((res) => res.json())
             .then((result) => {
+                console.log("API Response: ", result)
                 setServices(result);
                 setLoading(false);
             })
@@ -89,7 +90,7 @@ function CreateService() {
                         services.map((service) => (
                             <ServiceCompany
                                 key={service.id}
-                                id={service.id}
+                                serviceId={service.serviceId}
                                 title={service.name}
                                 description={service.description}
                                 price={service.price}
