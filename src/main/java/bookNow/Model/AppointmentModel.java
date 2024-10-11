@@ -49,8 +49,8 @@ public class AppointmentModel {
         return id;
     }
 
-    public void setAppointmentId(Long appointmentId) {
-        this.id = appointmentId;
+    public void setAppointmentId(Long id) {
+        this.id = id;
     }
 
     public LocalDate getAppointmentDate() {

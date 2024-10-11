@@ -5,20 +5,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<AppointmentModel, Long> {
 
-    List<AppointmentModel> findByUserId(Long userId);
+    List<AppointmentModel> findByUser_Id(Long userId);
 
-    List<AppointmentModel> findByCompanyId(Long companyId);
+    List<AppointmentModel> findByService_Id(Long serviceId);
 
-    List<AppointmentModel> findByServiceId(Long serviceId);
 
-    List<AppointmentModel> findByUserIdAndCompanyId(Long userId, Long CompanyId);
+    List<AppointmentModel> findByCompany_Id(Long companyId);
 
-    List<AppointmentModel> findByUserIdAndServiceId(Long userId, Long serviceId);
 
-    List<AppointmentModel> findByCompanyIdAndServiceId(Long companyId, Long serviceId);
 }
-

@@ -70,7 +70,7 @@ public class AuthenticationController {
         CompanyModel company = companyService.findByName(loginRequest.getCompanyName());
         AuthResponse authResponse = new AuthResponse();
         authResponse.setMessage("Bearer " + jwtToken);
-        authResponse.setCompanyId(company.getCompanyId());
+        authResponse.setId(company.getid());
         authResponse.setUserType(company.getUserType());
         return authResponse;
     }

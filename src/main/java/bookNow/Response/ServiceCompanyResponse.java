@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Data
 public class ServiceCompanyResponse {
 
-    Long id;
+    Long serviceId;
     Long companyId;
     String companyName;
     String name;
@@ -17,8 +17,8 @@ public class ServiceCompanyResponse {
     int duration;
 
     public ServiceCompanyResponse(ServiceCompanyModel entity){
-        this.id = entity.getServiceId();
-        this.companyId = entity.getCompany().getCompanyId();
+        this.serviceId = entity.getServiceId();
+        this.companyId = entity.getCompany().getid();
         this.companyName = entity.getCompany().getCompanyName();
         this.name = entity.getName();
         this.description = entity.getDescription();

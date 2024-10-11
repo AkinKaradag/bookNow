@@ -19,6 +19,7 @@ function Services(){
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [serviceCompaniesList, setServiceCompaniesList] = useState([]);
+    const [refresh, setRefresh] = useState(false)
     const classes = useStyles();
 
     const refreshServiceCompany = () => {
@@ -26,6 +27,7 @@ function Services(){
             .then(res => res.json())
             .then(
                 (result) => {
+                    //console.log("Backend Response: ", result);
                     setIsLoaded(true);
                     setServiceCompaniesList(result);
                 },
@@ -39,7 +41,7 @@ function Services(){
 
     useEffect(() => {
         refreshServiceCompany();
-    }, [serviceCompaniesList])
+    }, []);
 
     if (error) {
         return <div > Error!!! < /div>;
@@ -51,7 +53,8 @@ function Services(){
             <div className={classes.container}>
 
                 {serviceCompaniesList.map(serviceCompany => (
-                    <ServiceCompany title={serviceCompany.name} companyId={serviceCompany.companyId} companyName={serviceCompany.companyName}
+                    <ServiceCompany key={serviceCompany.serviceId} title={serviceCompany.name} serviceId={serviceCompany.serviceId}
+                                    companyName={serviceCompany.companyName} companyId={serviceCompany.companyId}
                                     description={serviceCompany.description} price={serviceCompany.price} duration={serviceCompany.duration}></ServiceCompany>
                 ))
                 } </div>

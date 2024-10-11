@@ -34,7 +34,7 @@ public class JwtUserDetails implements UserDetails {
 
     public static JwtUserDetails build(UserModel user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority("user"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_PRIVATEUSER"));
                 return new JwtUserDetails(
                         user.getId(),
                         user.getName(),
@@ -46,9 +46,9 @@ public class JwtUserDetails implements UserDetails {
 
     public static JwtUserDetails build(CompanyModel company) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("company"));
+        authorities.add(new SimpleGrantedAuthority("ROLE_COMPANYUSER"));
         return new JwtUserDetails(
-                company.getCompanyId(),
+                company.getid(),
                 company.getCompanyName(),
                 company.getPassword(),
                 UserType.COMPANYUSER,

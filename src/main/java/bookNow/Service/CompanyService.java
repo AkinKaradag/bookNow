@@ -28,12 +28,12 @@ public class CompanyService {
         return companyRepository.findAll();
     }
 
-    public CompanyModel findByCompanyId(Long companyId) {
-        return companyRepository.findById(companyId).orElse(null);
+    public CompanyModel findById(Long id) {
+        return companyRepository.findById(id).orElse(null);
     }
 
-    public CompanyModel updateCompany(Long companyId, CompanyModel updatedCompany) {
-        Optional<CompanyModel> company = companyRepository.findById(companyId);
+    public CompanyModel updateCompany(Long id, CompanyModel updatedCompany) {
+        Optional<CompanyModel> company = companyRepository.findById(id);
         if (company.isPresent()) {
             CompanyModel foundCompany = company.get();
             foundCompany.setCompanyName(updatedCompany.getCompanyName());
@@ -49,8 +49,8 @@ public class CompanyService {
         }
     }
 
-    public void deleteCompany(Long companyId) {
-        companyRepository.deleteById(companyId);
+    public void deleteCompany(Long id) {
+        companyRepository.deleteById(id);
     }
 
     public CompanyModel findByName(String userName) {

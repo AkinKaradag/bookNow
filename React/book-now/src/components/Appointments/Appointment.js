@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import { Button, styled } from '@mui/material';
+import { styled } from '@mui/material';
 import { IconButtonProps } from '@mui/material/IconButton';
 import { makeStyles } from '@mui/styles';
-import { Link } from 'react-router-dom';
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {red} from "@mui/material/colors";
+import UpdateAppointment from "./UpdateAppointment";
 
 const useStyle = makeStyles((theme) => ({
     root: {
         width: 800,
         textAlign: 'left',
         margin: 20,
+    },
+    appointmentList: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: '100%'
     },
     media: {
         height: 0,
@@ -34,164 +31,97 @@ const useStyle = makeStyles((theme) => ({
     },
 }));
 
-interface ExpandMoreProps extends IconButtonProps {
-    expand: boolean;
-}
-
-const ExpandMore = styled((props: ExpandMoreProps) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-})(({ theme }) => ({
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-    }),
-    variants: [
-        {
-            props: ({ expand }) => !expand,
-            style: {
-                transform: 'rotate(0deg)',
-            },
-        },
-        {
-            props: ({ expand }) => !!expand,
-            style: {
-                transform: 'rotate(180deg)',
-            },
-        },
-    ],
-}));
 
 function Appointment(props) {
-    const { id, appointmentDate, appointmentTime, companyId, companyName, userId, refreshAppointments } = props;
-    const [expanded, setExpanded] = useState(false);
+    const {appointmentId, appointmentDate, appointmentTime, serviceId, companyId, companyName, userId, refreshAppointments } = props;
     const classes = useStyle();
-    const [editMode, setEditMode] = useState(false);
-    const [updatedAppointment, setUpdatedAppointment] = useState({
-        appointmentDate,
-        appointmentTime,
-    });
+    const [appointments, setAppointments] = useState([])
+
 
     const userType = localStorage.getItem('userType');
-    const currentUserId = localStorage.getItem('currentUser');
 
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setUpdatedAppointment({ ...updatedAppointment, [name]: value });
-    };
 
-    const handleEdit = () => {
-        setEditMode(true);
-    };
 
-    const handleSave = () => {
-        fetch(`/appointments/${id}`, {
-            method: 'PUT',
+
+
+
+    const fetchAppointments = () => {
+        const userId = localStorage.getItem("currentUser");
+        const companyId = localStorage.getItem("companyId");
+        const userType = localStorage.getItem("userType");
+
+        let endpoint = "/appointments";
+
+        if (userType === "PRIVATEUSER") {
+            endpoint += `?userId=${userId}`;
+        } else if (userType === "COMPANYUSER") {
+            endpoint += `?companyId=${companyId}`;
+        }
+
+        fetch(endpoint, {
             headers: {
-                'Content-Type': 'application/json',
-                Authorization: localStorage.getItem('tokenKey'),
-            },
-            body: JSON.stringify(updatedAppointment),
-        })
-            .then((res) => res.json())
-            .then(() => {
-                setEditMode(false);
-                refreshAppointments(); // Refresh the appointments after saving changes
-            })
-            .catch((err) => console.log('Error updating appointment:', err));
-    };
-
-    const handleDelete = () => {
-        fetch(`/appointments/${id}`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: localStorage.getItem('tokenKey'),
+                "Authorization": localStorage.getItem("tokenKey"),
             },
         })
             .then((res) => {
-                if (res.ok) {
-                    refreshAppointments(); // Refresh the appointments after deletion
+                if (!res.ok) {
+                    throw new Error('Netzwerkantwort war nicht ok');
                 }
+                return res.json();
             })
-            .catch((err) => console.error('Delete failed', err));
+            .then((appointmentsData) => {
+                return Promise.all(appointmentsData.map(async (appointment) =>{
+                    //console.log("Service ID:", appointment.serviceId);
+                    //console.log("Company ID:", appointment.companyId);
+                    const serviceResponse = await fetch(`/service-companies/${appointment.serviceId}`, {
+                        headers: {
+
+                                    "Authorization": localStorage.getItem("tokenKey"),
+                        }
+                    });
+                    const companyResponse = await fetch(`/companies/${appointment.companyId}`,{
+                        headers: {
+                            "Authorization": localStorage.getItem("tokenKey"),
+                        }
+                    });
+
+                    const serviceData = await serviceResponse.json();
+                    const companyData = await companyResponse.json();
+
+                        return {
+                            ...appointment,
+                            serviceName: serviceData.name,
+                            companyName: companyData.companyName,
+                        };
+
+                    }));
+
+            })
+            .then((updatedAppointment) => setAppointments(updatedAppointment))
+            .catch((err) => {
+                console.log("Error fetching services: ", err);
+            });
     };
 
-    return (
-        <div className="appointmentContainer">
-            <Card className={classes.root}>
-                <CardHeader
-                    avatar={
-                        <Link className={classes.link} to={{ pathname: 'companies/' + companyId }}>
-                            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                                {/*companyName.charAt(0).toUpperCase()*/}
-                            </Avatar>
-                        </Link>
-                    }
-                    title={`Appointment with ${companyName}`}
-                    subheader={`${appointmentDate} at ${appointmentTime}`}
-                />
 
-                <CardContent>
-                    {editMode ? (
-                        <>
-                            <input
-                                type="date"
-                                name="appointmentDate"
-                                value={updatedAppointment.appointmentDate}
-                                onChange={handleInputChange}
-                            />
-                            <input
-                                type="time"
-                                name="appointmentTime"
-                                value={updatedAppointment.appointmentTime}
-                                onChange={handleInputChange}
-                            />
-                            <Button onClick={handleSave} variant="contained" color="primary">
-                                Save
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                {appointmentDate} - {appointmentTime}
-                            </Typography>
-                        </>
-                    )}
-                </CardContent>
-                <CardActions disableSpacing>
-                    <ExpandMore
-                        expand={expanded}
-                        onClick={handleExpandClick}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                    >
-                        <ExpandMoreIcon />
-                    </ExpandMore>
-                    {(userType === 'COMPANYUSER' || currentUserId === userId) && (
-                        <>
-                            <Button onClick={handleEdit} variant="contained" color="primary" style={{ marginLeft: 'auto' }}>
-                                Edit
-                            </Button>
-                            <Button onClick={handleDelete} variant="contained" color="secondary">
-                                Delete
-                            </Button>
-                        </>
-                    )}
-                </CardActions>
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <CardContent>
-                        <Typography>{`Company: ${companyName}`}</Typography>
-                        <Typography>{`Date: ${appointmentDate}`}</Typography>
-                        <Typography>{`Time: ${appointmentTime}`}</Typography>
-                    </CardContent>
-                </Collapse>
-            </Card>
+    useEffect(() => {
+        fetchAppointments();
+    }, []);
+
+    return (
+        <div>
+            {appointments.map((appointment) => (
+                <UpdateAppointment
+                    key={appointment.id}
+                    appointment={appointment}
+                    refreshAppointments={fetchAppointments}
+                />
+            ))}
         </div>
     );
+
+
 }
 
 export default Appointment;

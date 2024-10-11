@@ -19,6 +19,7 @@ public class ServiceCompanyService {
     @Autowired
     private ServiceRepository serviceRepository;
 
+    @Autowired
     private CompanyService companyService;
 
     public ServiceCompanyService(ServiceRepository serviceRepository, CompanyService companyService) {
@@ -26,22 +27,38 @@ public class ServiceCompanyService {
         this.companyService = companyService;
     }
 
-    public ServiceCompanyModel createServiceCompany(ServiceCompanyRequest newServiceCompany, CompanyModel company) {
+    public ServiceCompanyModel createServiceCompany(ServiceCompanyRequest newServiceCompany, Long id) {
+
+        CompanyModel company = companyService.findById(id);
+
+        System.out.println("Company für ID " + id + ": " + (company != null ? company.getCompanyName() : "Nicht gefunden"));
+
+        if (company == null) {
+            throw new IllegalArgumentException("Company not found");
+        }
 
             ServiceCompanyModel toSave = new ServiceCompanyModel();
+            toSave.setServiceId(newServiceCompany.getServiceId());
             toSave.setName(newServiceCompany.getName());
             toSave.setDescription(newServiceCompany.getDescription());
             toSave.setPrice(newServiceCompany.getPrice());
             toSave.setDuration(newServiceCompany.getDuration());
             toSave.setCompany(company);
-            return serviceRepository.save(toSave);
+
+        System.out.println("Speichern des Services: " + toSave.getName());
+
+            ServiceCompanyModel saved = serviceRepository.save(toSave);
+
+        System.out.println("Service erfolgreich gespeichert mit ID: " + saved.getServiceId());
+
+             return saved;
         
     }
 
     public List<ServiceCompanyResponse> getAllServiceCompanies(Optional<Long> companyId) {
         List<ServiceCompanyModel> listServices;
         if(companyId.isPresent()) {
-            listServices = serviceRepository.findByCompanyId(companyId.get());
+            listServices = serviceRepository.findByCompany_Id(companyId.get());
         } else {
             listServices = serviceRepository.findAll();
         }
@@ -70,6 +87,7 @@ public class ServiceCompanyService {
     public void deleteService(Long serviceId) {
         serviceRepository.deleteById(serviceId);
     }
+
     // Weitere Methoden für Update, Delete usw.
 }
 

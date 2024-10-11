@@ -56,7 +56,7 @@ function Navbar() {
                         <Typography variant="h6" component="div" style={{marginRight: 20, fontSize: 15}}>
                             {localStorage.getItem("currentUser") == null ? <Link className={classes.link} to="/auth/login/">Sign in</Link>:
                                <div><IconButton className={classes.link} onClick={onClick}><LockOpen></LockOpen></IconButton>
-                        <Link className={classes.link} to={{pathname : 'users/' + localStorage.getItem("currentUser")}}>Profile</Link>
+                        <Link className={classes.link} to={{pathname : 'companies/' + localStorage.getItem("currentUser")}}>Profile</Link>
                                </div>}
                         </Typography>
 

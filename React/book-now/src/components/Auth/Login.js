@@ -63,7 +63,7 @@ function Login(){
             .then((result) => {
 
                 if(result.userType === 'COMPANYUSER') {
-                    localStorage.setItem("companyId", result.companyId);
+                    localStorage.setItem("companyId", result.id);
                     localStorage.setItem("companyName", formData.companyName);
                     localStorage.setItem("userType", result.userType);
                 } else {

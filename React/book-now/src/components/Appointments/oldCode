@@ -1,0 +1,93 @@
+        import Card from '@mui/material/Card';
+        import CardHeader from '@mui/material/CardHeader';
+        import CardContent from '@mui/material/CardContent';
+        import CardActions from '@mui/material/CardActions';
+        import Collapse from '@mui/material/Collapse';
+        import Avatar from '@mui/material/Avatar';
+        import Typography from '@mui/material/Typography';
+        import { Link } from 'react-router-dom';
+        import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+        import {red} from "@mui/material/colors";
+        import ServiceCompany from "../ServiceCompany/ServiceCompany";
+        import { Button, styled } from '@mui/material';
+
+        <div className="appointmentContainer">
+            {appointments.length > 0 ? (
+                appointments.map((appointment) => (
+                    <Card key={appointment.id} className={classes.root}>
+                        <CardHeader
+                            avatar={
+                                <Link className={classes.link} to={{ pathname: 'companies/' + appointment.companyId }}>
+                                    <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                                        {/*appointment.companyName.charAt(0).toUpperCase()*/}
+
+                                    </Avatar>
+                                </Link>
+                            }
+                            title={`Appointment with ${appointment.serviceName}`}
+                            subheader={`${appointment.appointmentDate} at ${appointment.appointmentTime}`}
+                        />
+
+                        <CardContent>
+                            {editMode[appointment.id] ? (
+                                <>
+                                    <input
+                                        type="date"
+                                        name="appointmentDate"
+                                        value={updatedAppointment[appointment.id]?.appointmentDate || appointment.appointmentDate}
+                                        onChange={(e) => handleInputChange(e, appointment.id)}
+                                    />
+                                    <input
+                                        type="time"
+                                        name="appointmentTime"
+                                        value={updatedAppointment[appointment.id]?.appointmentTime || appointment.appointmentTime}
+                                        onChange={(e) => handleInputChange(e, appointment.id)}
+                                    />
+                                    <Button onClick={() => handleSave(appointment.id)} variant="contained" color="primary">
+                                        Save
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                        {appointment.appointmentDate} - {appointment.appointmentTime}
+                                    </Typography>
+                                </>
+                            )}
+                        </CardContent>
+                        <CardActions disableSpacing>
+                            <ExpandMore
+                                expand={expanded[appointment.id] || false}
+                                onClick={() => handleExpandClick(appointment.id)}
+                                aria-expanded={expanded[appointment.id] || false}
+                                aria-label="show more"
+                            >
+                                <ExpandMoreIcon />
+                            </ExpandMore>
+
+
+                            {((userType === 'COMPANYUSER' && companyId === appointments.companyId) || (userId === appointments.userId && userType === 'PRIVATEUSER')) && (
+                                <>
+                                    <Button onClick={() => handleEdit(appointment.id)} variant="contained" color="primary" style={{ marginLeft: 'auto' }}>
+                                        Edit
+                                    </Button>
+                                    <Button onClick={() => handleDelete(appointment.id)} variant="contained" color="secondary">
+                                        Delete
+                                    </Button>
+                                </>
+                            )}
+
+                        </CardActions>
+                        <Collapse in={expanded[appointment.id] || false} timeout="auto" unmountOnExit>
+                            <CardContent>
+                                <Typography>{`Company: ${appointment.companyName}`}</Typography>
+                                <Typography>{`Date: ${appointment.appointmentDate}`}</Typography>
+                                <Typography>{`Time: ${appointment.appointmentTime}`}</Typography>
+                            </CardContent>
+                        </Collapse>
+                    </Card>
+                ))
+            ) : (
+                <Typography variant="h6">Keine Termine gefunden.</Typography>
+            )}
+        </div>

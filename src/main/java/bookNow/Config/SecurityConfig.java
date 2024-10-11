@@ -3,15 +3,15 @@ package bookNow.Config;
 import bookNow.Security.JwtAuthenticationEntryPoint;
 import bookNow.Security.JwtAuthenticationFilter;
 import bookNow.Service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,12 +19,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
 
     private UserDetailsServiceImpl userDetailsService;
 
@@ -45,33 +46,36 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsConfigurationSource corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
-        config.addAllowedMethod("OPTIONS");
+        config.addAllowedMethod("*");
+        /*config.addAllowedMethod("OPTIONS");
         config.addAllowedMethod("HEAD");
         config.addAllowedMethod("GET");
         config.addAllowedMethod("PUT");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("PATCH");
+        config.addAllowedMethod("PATCH");*/
         source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+        return source;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsFilter()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling( exceptions -> exceptions.authenticationEntryPoint(handler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -79,20 +83,22 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/appointments").hasAnyRole("COMPANYUSER", "PRIVATEUSER")
                 .requestMatchers(HttpMethod.GET, "/appointments").hasAnyRole("COMPANYUSER", "PRIVATEUSER")
                 .requestMatchers(HttpMethod.GET, "/appointments/*").hasAnyRole("COMPANYUSER", "PRIVATEUSER")
+                .requestMatchers(HttpMethod.GET, "/appointments/**").hasAnyRole("COMPANYUSER", "PRIVATEUSER")
                 .requestMatchers(HttpMethod.PUT, "/appointments/*").hasAnyRole("COMPANYUSER", "PRIVATEUSER")
                 .requestMatchers(HttpMethod.DELETE, "/appointments/*").hasAnyRole("COMPANYUSER", "PRIVATEUSER")
-                .requestMatchers(HttpMethod.POST, "/service-companies").hasRole("COMPANYUSER")
+                .requestMatchers(HttpMethod.POST, "/service-companies/**").hasRole("COMPANYUSER")
                 .requestMatchers(HttpMethod.PUT, "/service-companies/*").hasRole("COMPANYUSER")
                 .requestMatchers(HttpMethod.DELETE, "/service-companies/*").hasRole("COMPANYUSER")
+                .requestMatchers(HttpMethod.GET, "/companies").permitAll()
                 .requestMatchers(HttpMethod.GET, "/service-companies").permitAll()
                 .requestMatchers(HttpMethod.GET, "/service-companies/*").permitAll()
                 .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                 .anyRequest().authenticated()
                 )
-                .formLogin(AbstractHttpConfigurer::disable);
+                //.formLogin(AbstractHttpConfigurer::disable);
 
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
     }

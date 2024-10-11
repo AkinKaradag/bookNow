@@ -33,12 +33,12 @@ public class CompanyModel {
 
     // Getters und Setters
 
-    public Long getCompanyId() {
+    public Long getid() {
         return id;
     }
 
-    public void setCompanyId(Long companyId) {
-        this.id = companyId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCompanyName() {

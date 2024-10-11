@@ -8,5 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ServiceRepository extends JpaRepository<ServiceCompanyModel, Long> {
-    List<ServiceCompanyModel> findByCompanyId(Long companyId);
+
+
+    List<ServiceCompanyModel> findByCompany_Id(Long companyId);
 }

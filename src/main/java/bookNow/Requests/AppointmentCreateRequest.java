@@ -11,7 +11,6 @@ import java.time.LocalTime;
 @Data
 public class AppointmentCreateRequest {
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     private Long appointmentId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate appointmentDate;

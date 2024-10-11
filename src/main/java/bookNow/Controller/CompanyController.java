@@ -24,21 +24,21 @@ public class CompanyController {
         return companyService.getAllCompanies();
     }
 
-    @GetMapping("/{companyId}")
-    public CompanyModel findByCompanyId(@PathVariable Long companyId) {
+    @GetMapping("/{id}")
+    public CompanyModel findById(@PathVariable Long id) {
         //custom exception
-        return companyService.findByCompanyId(companyId);
+        return companyService.findById(id);
     }
 
-    @PutMapping("/{companyId}")
-    public CompanyModel updateCompany(@PathVariable Long companyId, @RequestBody CompanyModel updatedCompany) {
-        return companyService.updateCompany(companyId, updatedCompany);
+    @PutMapping("/{id}")
+    public CompanyModel updateCompany(@PathVariable Long id, @RequestBody CompanyModel updatedCompany) {
+        return companyService.updateCompany(id, updatedCompany);
 
     }
 
-    @DeleteMapping("/{companyId}")
-    public void deleteCompany(@PathVariable Long companyId) {
-        companyService.deleteCompany(companyId);
+    @DeleteMapping("/{id}")
+    public void deleteCompany(@PathVariable Long id) {
+        companyService.deleteCompany(id);
     }
 
     // Weitere Endpunkte für Update, Delete usw.

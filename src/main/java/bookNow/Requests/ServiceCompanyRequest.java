@@ -1,6 +1,5 @@
 package bookNow.Requests;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -18,7 +17,7 @@ public class ServiceCompanyRequest {
     private BigDecimal price;
 
     private int duration;
-    @JsonIgnoreProperties(ignoreUnknown = true)
+
     private Long companyId;
 
 }

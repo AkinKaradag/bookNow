@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -55,9 +58,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public UserDetails loadCompanyById(Long id) {
-        CompanyModel company = companyRepository.findById(id).get();
+        // Versuche, die Company anhand der ID zu finden
+        Optional<CompanyModel> companyOptional = companyRepository.findById(id);
 
-        return JwtUserDetails.build(company);
+        // Überprüfe, ob ein Wert vorhanden ist
+        if (companyOptional.isPresent()) {
+            return JwtUserDetails.build(companyOptional.get());
+        } else {
+            throw new NoSuchElementException("Company with ID " + id + " not found");
+        }
     }
+
 
 }

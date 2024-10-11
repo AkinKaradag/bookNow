@@ -64,6 +64,8 @@ function ServiceCompanyCreateForm(props) {
 
     const handleSubmit = () => {
         const companyId = localStorage.getItem("companyId");
+        const token = localStorage.getItem("tokenKey");
+        console.log("Token:", token);
         const dataToSend = {
             ...formData,
             companyId: companyId
@@ -73,22 +75,36 @@ function ServiceCompanyCreateForm(props) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": localStorage.getItem("tokenKey"),
+                    "Authorization": token,
                 },
                 body: JSON.stringify(dataToSend),
             })
-            .then((res) => res.json())
-            .then(() => {
+            .then((res) => {
+                console.log("Response status:", res.status); // Protokolliere den Statuscode
+                console.log("Response headers:", res.headers); // Protokolliere die Header
+                return res.text(); // Verwende .text() um den Antworttext zu erhalten
+            })
+            .then((text) => {
+                console.log("Response body as text:", text); // Ausgabe des Textes zur Fehleranalyse
+                // Versuche, den Text zu JSON zu parsen, falls die Antwort erwartet wird
+                if (text) {
+                    return JSON.parse(text);
+                } else {
+                    throw new Error("Leere Antwort erhalten");
+                }
+            })
+            .then((json) => {
+                console.log("Parsed JSON:", json);
                 setIsSent(true);
                 setFormData({
                     name: "",
                     description: "",
-                    price: 0,
+                    price: '',
                     duration: ''
                 });
                 refreshServiceCompany();
             })
-            .catch((err) => console.log("error"));
+            .catch((err) => console.log("error:", err));
     };
 
 

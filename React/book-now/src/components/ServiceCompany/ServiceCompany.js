@@ -71,7 +71,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 function ServiceCompany(props) {
 
-    const {serviceId, title, description, price, duration, companyId, companyName, refreshServiceCompany} = props;
+    const {serviceId, title, description, price, duration, companyId, companyName, refreshServiceCompany, appointmentId, isCompanyService} = props;
     const [expanded, setExpanded] = React.useState(false);
     const classes = useStyle();
     const [liked, setLiked] = useState(false);
@@ -79,6 +79,8 @@ function ServiceCompany(props) {
     const [appointmentDate, setAppointmentDate] = useState('');
     const [appointmentTime, setAppointmentTime] = useState('');
     const userType = localStorage.getItem("userType");
+    const [refresh, setRefresh] = useState(false)
+    const [services, setServices] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [updatedService, setUpdatedService] = useState({
         name: title,
@@ -112,7 +114,7 @@ function ServiceCompany(props) {
             userId: localStorage.getItem("currentUser"),
             companyId: companyId
         };
-
+        console.log("Token: " + localStorage.getItem("tokenKey"));
         console.log("Service ID:", props.serviceId);
         console.log("Booking Data:", bookingData);
 
@@ -124,13 +126,16 @@ function ServiceCompany(props) {
             },
             body: JSON.stringify(bookingData)
         })
-            .then((res) => res.json())
-            .then((result) => {
-                console.log("Appointment booked successfully:", result);
+            .then((res) => {
+                console.log("Response Status: ", res.status);
+                return res.text();
+            })
+            .then((text) => {
+                console.log("Response status:", text);
                 handleBookingClose();
             })
-            .catch((error) => {
-                console.error("Error booking appointment:", error);
+            .catch((err) => {
+                console.error("Error booking appointment:", err);
             });
     };
 
@@ -145,9 +150,15 @@ function ServiceCompany(props) {
     const handleEdit = () => {
         setEditMode(true);
     };
+    console.log("Service ID:", serviceId); // Prüfen, ob serviceId korrekt empfangen wird
+    const handleSave = (serviceId) => {
+        if (!serviceId) {
+            console.error("Fehler: serviceId ist nicht definiert.");
+            return;
+        }
 
-    const handleSave = () => {
         fetch(`service-companies/${serviceId}`, {
+
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -179,8 +190,24 @@ function ServiceCompany(props) {
     }
 
     useEffect(() => {
-        console.log("ServiceId: ", serviceId);
-    }, [serviceId]);
+        //fetchAllServices();
+        //console.log("ServiceId: ", serviceId);
+    }, []);
+
+
+    /*const fetchAllServices = () => {
+        fetch("/service-companies", {
+            headers: {
+                "Authorization": localStorage.getItem("tokenKey")
+            }
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("Services data on overview page:", data); // <== Logge die Daten hier
+                setServices(data);
+            })
+            .catch((err) => console.error("Error fetching services", err));
+    };*/
 
     return(
         <div className="serviceContainer">
@@ -227,7 +254,7 @@ function ServiceCompany(props) {
                                 onChange={handleInputChange}
                                 placeholder="Duration (minutes)"
                             />
-                            <Button onClick={handleSave} variant="contained" color="primary">
+                            <Button onClick={() => handleSave(serviceId)} variant="contained" color="primary">
                                 Save
                             </Button>
                         </div>
@@ -286,12 +313,13 @@ function ServiceCompany(props) {
                     >
                         <ExpandMoreIcon />
                     </ExpandMore>
-                    {userType && (userType === "COMPANYUSER" || userType === "PRIVATEUSER") &&  (
+                    {userType === "PRIVATEUSER" &&  (
                         <Button onClick={handleBookingOpen} variant="contained" color="primary" style={{ marginLeft: 'auto' }}>
                             Book Appointment
                         </Button>
                     )}
-
+                    {isCompanyService && (
+                        <CardActions disableSpacing>
                     {userType === "COMPANYUSER" &&  (
                         <>
                         <Button onClick={handleEdit} variant="contained" color="primary" style={{marginLeft: 'auto'}}>
@@ -302,6 +330,8 @@ function ServiceCompany(props) {
                         </Button>
                         </>
                     )}
+                        </CardActions>
+                            )}
 
                 </CardActions>
                 <Collapse in={expanded} timeout="auto" unmountOnExit>

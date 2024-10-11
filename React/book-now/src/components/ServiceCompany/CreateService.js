@@ -37,17 +37,27 @@ function CreateService() {
     // Fetch services for the logged-in company
     const fetchServices = () => {
         const companyId = localStorage.getItem("companyId");
+        console.log("Sende Anfrage an: ", `/service-companies?companyId=${companyId}`);
+        console.log("Fetched companyId from Local Storage: ", companyId);
+
+
         fetch(`/service-companies?companyId=${companyId}`, {
             headers: {
                 "Authorization": localStorage.getItem("tokenKey")
             }
         })
-            .then((res) => res.json())
-            .then((result) => {
-                console.log("API Response: ", result)
-                setServices(result);
-                setLoading(false);
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error('Netzwerkantwort war nicht ok');
+                }
+                return res.json();
             })
+                .then((result) => {
+                    console.log("API Response: ", result);
+                    setServices(result);
+                    setLoading(false);
+                })
+
             .catch((err) => {
                 console.log("Error fetching services:", err);
                 setLoading(false);
@@ -59,6 +69,7 @@ function CreateService() {
     }
 
     useEffect(() => {
+        //console.log("Aktueller Services-State", services)
         fetchServices();
     }, []);
 
@@ -82,6 +93,7 @@ function CreateService() {
             <h2>Company Services</h2>
 
             {/* Display list of services */}
+            {userType === "COMPANYUSER" && (
             <div className={classes.servicesList}>
                 {loading ? (
                     <div>Loading services...</div>
@@ -89,7 +101,7 @@ function CreateService() {
                     services.length > 0 ? (
                         services.map((service) => (
                             <ServiceCompany
-                                key={service.id}
+                                key={service.serviceId}
                                 serviceId={service.serviceId}
                                 title={service.name}
                                 description={service.description}
@@ -98,6 +110,7 @@ function CreateService() {
                                 companyId={service.companyId}
                                 companyName={service.companyName}
                                 refreshServiceCompany={refreshServiceCompany}
+                                isCompanyService={true}
                             />
                         ))
                     ) : (
@@ -105,8 +118,11 @@ function CreateService() {
                     )
                 )}
             </div>
+            )}
         </div>
+
     );
+
 }
 
 export default CreateService;

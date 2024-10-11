@@ -62,7 +62,7 @@ function Register(){
             .then((res) => res.json())
             .then((result) => {
                 if(result.userType === 'COMPANYUSER') {
-                    localStorage.setItem("companyId", result.companyId);
+                    localStorage.setItem("id", result.id);
                     localStorage.setItem("companyName", formData.companyName)
                 } else {
                     localStorage.setItem("currentUser", result.userId);

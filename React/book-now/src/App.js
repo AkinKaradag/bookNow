@@ -3,7 +3,7 @@ import './App.css';
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import React from "react";
 import Home from "./components/Home/Home";
-import User from "./components/User/User";
+import User from "./components/Profile/User";
 import Navbar from "./components/Navbar/Navbar";
 import Register from "./components/Auth/Register";
 import Login from "./components/Auth/Login";

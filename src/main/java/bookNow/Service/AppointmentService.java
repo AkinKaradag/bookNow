@@ -7,12 +7,13 @@ import bookNow.Model.UserModel;
 import bookNow.Repository.AppointmentRepository;
 import bookNow.Requests.AppointmentCreateRequest;
 import bookNow.Requests.AppointmentUpdateRequest;
+import bookNow.Response.AppointmentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -32,9 +33,11 @@ public class AppointmentService {
 
     public AppointmentModel createAppointment(AppointmentCreateRequest newAppointment) {
         UserModel user = userService.findByUserId(newAppointment.getUserId());
-        CompanyModel company = companyService.findByCompanyId(newAppointment.getCompanyId());
+        CompanyModel company = companyService.findById(newAppointment.getCompanyId());
         ServiceCompanyModel service = serviceCompanyService.findByServiceId(newAppointment.getServiceId());
-        if (user != null && company != null && service != null) {
+        if (user == null && company == null && service == null) {
+            throw new IllegalArgumentException("User, Company or Service not found");
+        }
             AppointmentModel toSave = new AppointmentModel();
             toSave.setAppointmentId(newAppointment.getAppointmentId());
             toSave.setAppointmentDate(newAppointment.getAppointmentDate());
@@ -43,33 +46,27 @@ public class AppointmentService {
             toSave.setCompany(company);
             toSave.setService(service);
             return appointmentRepository.save(toSave);
-        } else {
-            return null;
-        } }
+       }
 
-        public List<AppointmentModel> getAllAppointments (Optional <Long> userId, Optional <Long> companyId, Optional <Long> serviceId) {
-            if (userId.isPresent() && companyId.isPresent()) {
-                return appointmentRepository.findByUserIdAndCompanyId(userId.get(), companyId.get());
-            } else if (userId.isPresent() && serviceId.isPresent()) {
-                return appointmentRepository.findByUserIdAndServiceId(userId.get(), serviceId.get());
-            } else if (companyId.isPresent() && serviceId.isPresent()) {
-                return appointmentRepository.findByCompanyIdAndServiceId(companyId.get(), serviceId.get());
-            }else if (userId.isPresent()) {
-                return appointmentRepository.findByUserId(userId.get());
+        public List<AppointmentResponse> getAllAppointments (Optional <Long> userId, Optional <Long> serviceId, Optional <Long> companyId){
+            List<AppointmentModel> listAppointments;
+            if (userId.isPresent()) {
+                listAppointments = appointmentRepository.findByUser_Id(userId.get());
             } else if (companyId.isPresent()) {
-                return appointmentRepository.findByCompanyId(companyId.get());
+                listAppointments = appointmentRepository.findByCompany_Id(companyId.get());
             } else if (serviceId.isPresent()) {
-                return appointmentRepository.findByServiceId(serviceId.get());
+                listAppointments = appointmentRepository.findByService_Id(serviceId.get());
             } else {
-                return appointmentRepository.findAll();
+                listAppointments = appointmentRepository.findAll();
             }
+            return listAppointments.stream().map(AppointmentResponse::new).collect(Collectors.toList());
         }
 
-        public AppointmentModel findByAppointmentId (@PathVariable Long appointmentId){
+        public AppointmentModel findByAppointmentId(Long appointmentId){
             return appointmentRepository.findById(appointmentId).orElse(null);
         }
 
-        public AppointmentModel updateAppointment (Long appointmentId, AppointmentUpdateRequest updatedAppointment){
+        public AppointmentModel updateAppointment(Long appointmentId, AppointmentUpdateRequest updatedAppointment){
             Optional<AppointmentModel> appointment = appointmentRepository.findById(appointmentId);
             if (appointment.isPresent()) {
                 AppointmentModel toUpdate = appointment.get();

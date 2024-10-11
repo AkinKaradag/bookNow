@@ -51,7 +51,7 @@ function Home(){
                     <div className={classes.container}>
 
                 {serviceCompaniesList.map(serviceCompany => (
-                    <ServiceCompany title={serviceCompany.name} companyId={serviceCompany.companyId} companyName={serviceCompany.companyName}
+                    <ServiceCompany title={serviceCompany.name} id={serviceCompany.id} companyName={serviceCompany.companyName}
                     description={serviceCompany.description} price={serviceCompany.price} duration={serviceCompany.duration}></ServiceCompany>
                 ))
                 } </div>
