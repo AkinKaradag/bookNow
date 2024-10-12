@@ -10,6 +10,7 @@ import Login from "./components/Auth/Login";
 import Services from "./components/ServiceCompany/Services";
 import CreateService from "./components/ServiceCompany/CreateService";
 import Appointment from "./components/Appointments/Appointment";
+import Company from "./components/Profile/Company";
 
 function App() {
     return (
@@ -19,10 +20,9 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home/>}></Route>
                     <Route path="users/:userId" element={<User/>}></Route>
-                    <Route path="/auth/login/" element={localStorage.getItem("currentUser") != null ? <Navigate to="/"/>: <Login/>}>
-                </Route>
-                    <Route path="/auth/register/" element={localStorage.getItem("currentUser") != null ? <Navigate to="auth/login"/>: <Register/>}>
-                    </Route>
+                    <Route path="companies/:companyId" element={<Company />} />
+                    <Route path="/auth/login/" element={localStorage.getItem("currentUser") != null ? <Navigate to="/"/>: <Login/>}></Route>
+                    <Route path="/auth/register/" element={localStorage.getItem("currentUser") != null ? <Navigate to="auth/login"/>: <Register/>}></Route>
                     <Route path="/services" element={<Services/>}></Route>
                     <Route path="/create-service" element={<CreateService/>}></Route>
                     <Route path="/appointments" element={<Appointment/>}></Route>

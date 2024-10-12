@@ -3,7 +3,9 @@ package bookNow.Service;
 import bookNow.Model.CompanyModel;
 import bookNow.Model.UserModel;
 import bookNow.Repository.CompanyRepository;
+import bookNow.Requests.CompanyUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +18,13 @@ public class CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
 
-    public CompanyService(CompanyRepository companyRepository) {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public CompanyService(CompanyRepository companyRepository, PasswordEncoder passwordEncoder) {
         this.companyRepository = companyRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public CompanyModel createCompany(CompanyModel company) {
@@ -32,7 +39,7 @@ public class CompanyService {
         return companyRepository.findById(id).orElse(null);
     }
 
-    public CompanyModel updateCompany(Long id, CompanyModel updatedCompany) {
+    public CompanyModel updateCompany(Long id, CompanyUpdate updatedCompany) {
         Optional<CompanyModel> company = companyRepository.findById(id);
         if (company.isPresent()) {
             CompanyModel foundCompany = company.get();
@@ -42,7 +49,10 @@ public class CompanyService {
             foundCompany.setCompanyPostalCode(updatedCompany.getCompanyPostalCode());
             foundCompany.setPhoneNumber(updatedCompany.getPhoneNumber());
             foundCompany.setDescription(updatedCompany.getDescription());
-            foundCompany.setUserType(updatedCompany.getUserType());
+            if (updatedCompany.getPassword() != null && !updatedCompany.getPassword().isEmpty()) {
+                String encryptedPassword = passwordEncoder.encode(updatedCompany.getPassword());
+                foundCompany.setPassword(encryptedPassword);
+            }
             return companyRepository.save(foundCompany);
         } else {
             return null;

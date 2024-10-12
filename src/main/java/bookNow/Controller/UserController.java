@@ -1,6 +1,7 @@
 package bookNow.Controller;
 
 import bookNow.Model.UserModel;
+import bookNow.Requests.UserUpdate;
 import bookNow.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public UserModel updateUser(@PathVariable Long userId, @RequestBody UserModel updatedUser) {
+    public UserModel updateUser(@PathVariable Long userId, @RequestBody UserUpdate updatedUser) {
         return userService.updateUser(userId, updatedUser);
 
     }

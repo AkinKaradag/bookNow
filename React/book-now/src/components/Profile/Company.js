@@ -1,16 +1,19 @@
 //import Avatar from "../Avatar/Avatar";
 import React, { useEffect, useState } from 'react';
 import Profile from './Profile';
+import CompanyUserProfile from "./CompanyUserProfile";
 
-function User() {
-    const [userData, setUserData] = useState(null);
-    const id = localStorage.getItem("currentUser");
+function Company() {
+    const [companyData, setCompanyData] = useState(null);
+    const companyId = localStorage.getItem("companyId");
     const token = localStorage.getItem("tokenKey");
+
+    console.log("Loaded companyId from localStorage:", companyId);
 
     useEffect(() => {
         // Nur dann einen Fetch starten, wenn companyId vorhanden ist
-        if (id) {
-            fetch(`/users/${id}`, {
+        if (companyId) {
+            fetch(`/companies/${companyId}`, {
                 headers: {
                     "Authorization": token,
                 }
@@ -23,17 +26,20 @@ function User() {
                 })
                 .then(data => {
                     console.log("Fetched data:", data);
-                    setUserData(data)
+                    data.companyId = parseInt(data.id, 10);
+                    console.log("Parsed companyId:", data.companyId);
+                    setCompanyData(data)
                 })
                 .catch(error => console.error('Error fetching Company data:', error));
         }
-    }, [id, token]);
+    }, [companyId, token]);
 
-// User.js oder eine andere Datei für PRIVATEUSER
-    return userData ? (
-        <Profile userData={userData} userType="PRIVATEUSER"/>
+    // Nur rendern, wenn companyData geladen ist
+    return companyData ? (
+        <Profile companyData={companyData} userType="COMPANYUSER" />
     ) : (
-        <div>Loading User Data...</div>
+        <div>Loading Company Data...</div>
     );
 }
-export default User;
+
+export default Company;

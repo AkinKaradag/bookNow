@@ -1,63 +1,53 @@
-import React, {useEffect, useState} from "react";
-import ServiceCompany from "../ServiceCompany/ServiceCompany";
-import Container from '@mui/material/Container';
-import {makeStyles} from "@mui/styles";
-import ServiceCompanyCreateForm from "../ServiceCompany/ServiceCompanyCreateForm";
+import React from 'react';
+import { Button, Box, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { Link } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
-    container: {
-        display:"flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: '#DCCFCF'
+const useStyles = makeStyles({
+    root: {
+        height: '60vw', // full screen height
+        width: '100vw',
+        display: 'flex',
+        alignItems: 'flex',
+        justifyContent: 'flex-start',
+        backgroundImage: `url('/Logo.jpg')`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        color: 'black',
+        textAlign: 'center',
+        flexDirection: 'column',
+        paddingTop: '20px',
+    },
+    buttonContainer: {
+        marginTop: '20px',
+        justifyContent: 'center',
+        display: 'flex',
+        gap: '20px', // space between buttons
+    },
+    button: {
+        color: 'white',
+        borderColor: 'white',
     }
-}));
+});
 
-
-function Home(){
-    const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [serviceCompaniesList, setServiceCompaniesList] = useState([]);
+function Home() {
     const classes = useStyles();
 
-    const refreshServiceCompany = () => {
-        fetch("/service-companies")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setIsLoaded(true);
-                    setServiceCompaniesList(result);
-                },
-                (error) => {
-                    console.log(error)
-                    setIsLoaded(true);
-                    setError(error);
-                }
-            )
-    }
-
-    useEffect(() => {
-        refreshServiceCompany();
-    }, [serviceCompaniesList])
-
-    if (error) {
-        return <div > Error!!! < /div>;
-    } else if (!isLoaded) {
-        return <div > Loading... < /div>;
-    } else {
-        return (
-
-                    <div className={classes.container}>
-
-                {serviceCompaniesList.map(serviceCompany => (
-                    <ServiceCompany title={serviceCompany.name} id={serviceCompany.id} companyName={serviceCompany.companyName}
-                    description={serviceCompany.description} price={serviceCompany.price} duration={serviceCompany.duration}></ServiceCompany>
-                ))
-                } </div>
-
-        );
-    }
+    return (
+        <Box className={classes.root}>
+            <Typography variant="h2">Willkommen auf unserer Seite!</Typography>
+            <Typography variant="h6">Entdecken Sie unsere Dienstleistungen und werden Sie Teil unserer Community.</Typography>
+            <Box className={classes.buttonContainer}>
+                <Button variant="outlined" className={classes.button} component={Link} to="/services">
+                    Our Services
+                </Button>
+                <Button variant="outlined" className={classes.button} component={Link} to="/auth/register">
+                    Sign Up
+                </Button>
+            </Box>
+        </Box>
+    );
 }
 
 export default Home;

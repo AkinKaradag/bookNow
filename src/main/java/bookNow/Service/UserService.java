@@ -2,7 +2,9 @@ package bookNow.Service;
 
 import bookNow.Model.UserModel;
 import bookNow.Repository.UserRepository;
+import bookNow.Requests.UserUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +16,13 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserModel createUser(UserModel user) {
@@ -30,14 +37,16 @@ public class UserService {
         return userRepository.findById(userId).orElse(null);
     }
 
-    public UserModel updateUser(Long userID, UserModel updatedUser) {
+    public UserModel updateUser(Long userID, UserUpdate updatedUser) {
         Optional<UserModel> user = userRepository.findById(userID);
         if (user.isPresent()) {
             UserModel foundUser = user.get();
-            foundUser.setName(updatedUser.getName());
+            foundUser.setName(updatedUser.getUserName());
             foundUser.setEmail(updatedUser.getEmail());
-            foundUser.setPassword(updatedUser.getPassword());
-            foundUser.setUserType(updatedUser.getUserType());
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                String encryptedPassword = passwordEncoder.encode(updatedUser.getPassword());
+                foundUser.setPassword(encryptedPassword);
+            }
             return userRepository.save(foundUser);
         } else {
             return null;

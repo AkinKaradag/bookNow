@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -20,21 +20,52 @@ const useStyle = makeStyles((theme) => ({
 
 function Navbar() {
     const classes = useStyle();
-    let history = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const userId = localStorage.getItem("currentUser");
+    const userType = localStorage.getItem("userType");
+    const [navColor, setNavColor] = useState("primary");
+    const companyId = localStorage.getItem("companyId");
+    const navigate = useNavigate();
+
+
+    useEffect(() => {
+        const currentUserId = userType === "COMPANYUSER" ? localStorage.getItem("companyId") : localStorage.getItem("currentUser");
+        const isUserLoggedIn = currentUserId && userType;
+        setIsLoggedIn(isUserLoggedIn);
+        console.log("Checking login status...");
+        console.log("currentUser:", currentUserId);
+        console.log("userType:", userType);
+
+        // Change Navbar color based on user type
+        if (userType === "COMPANYUSER") {
+            setNavColor("success"); // Green for CompanyUser
+        } else {
+            setNavColor("primary"); // Default color for PrivateUser
+        }
+
+    }, [userType]);
+
 
     const onClick = () => {
-        localStorage.removeItem("tokenKey");
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("userName");
-        //history("/auth/login");
+        localStorage.clear();
+        setIsLoggedIn(false);
+        navigate("/");
+        window.location.reload(); // Reset the page completely
+
     }
+
+
+
+    const profilePath = localStorage.getItem("userType") === "COMPANYUSER" ? `/companies/${localStorage.getItem("companyId")}` : `/users/${localStorage.getItem("currentUser")}`
+
+    console.log("Is Logged In:", isLoggedIn);
 
     return(
 
 
         <div>
             <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static">
+                <AppBar position="static" color={navColor}>
                     <Toolbar>
 
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} textAlign="left">
@@ -54,10 +85,16 @@ function Navbar() {
                         </Typography>
 
                         <Typography variant="h6" component="div" style={{marginRight: 20, fontSize: 15}}>
-                            {localStorage.getItem("currentUser") == null ? <Link className={classes.link} to="/auth/login/">Sign in</Link>:
-                               <div><IconButton className={classes.link} onClick={onClick}><LockOpen></LockOpen></IconButton>
-                        <Link className={classes.link} to={{pathname : 'companies/' + localStorage.getItem("currentUser")}}>Profile</Link>
-                               </div>}
+                            {!isLoggedIn ? (
+                                <Link className={classes.link} to="/auth/login/">Sign in</Link>
+                            ) : (
+                                <div>
+                                    <IconButton className={classes.link} onClick={onClick}>
+                                        <LockOpen />
+                                    </IconButton>
+                                    <Link className={classes.link} to={profilePath}>Profile</Link>
+                                </div>
+                            )}
                         </Typography>
 
                         <Typography variant="h6" component="div" style={{fontSize: 15}}>

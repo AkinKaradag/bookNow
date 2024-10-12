@@ -1,6 +1,7 @@
 package bookNow.Controller;
 
 import bookNow.Model.CompanyModel;
+import bookNow.Requests.CompanyUpdate;
 import bookNow.Service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}")
-    public CompanyModel updateCompany(@PathVariable Long id, @RequestBody CompanyModel updatedCompany) {
+    public CompanyModel updateCompany(@PathVariable Long id, @RequestBody CompanyUpdate updatedCompany) {
         return companyService.updateCompany(id, updatedCompany);
 
     }
