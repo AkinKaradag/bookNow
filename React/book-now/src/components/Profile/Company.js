@@ -1,44 +1,34 @@
-//import Avatar from "../Avatar/Avatar";
 import React, { useEffect, useState } from 'react';
 import Profile from './Profile';
-import CompanyUserProfile from "./CompanyUserProfile";
+import useApiRequest from "../APIServices/ApiRequest";
+
+/**
+ * Diese Komponente lädt die Daten eines COMPANYUSER und zeigt das Profil in der Profile-Komponente
+ * */
 
 function Company() {
-    const [companyData, setCompanyData] = useState(null);
-    const companyId = localStorage.getItem("companyId");
-    const token = localStorage.getItem("tokenKey");
+    const [companyData, setCompanyData] = useState(null); // Zustand zur Speicherung der Firmen-Daten
+    const companyId = localStorage.getItem("companyId"); // Holt die Firmen-ID aus dem Local Storage
+    const { get } = useApiRequest(); // Zugriff auf die GET-Funktion aus der zentralen API-Logik
 
-    console.log("Loaded companyId from localStorage:", companyId);
-
+    // useEffect-Hook wird aufgerufen, sobald die Komponente geladen wird
     useEffect(() => {
-        // Nur dann einen Fetch starten, wenn companyId vorhanden ist
+        // Nur wenn eine companyId vorhanden ist, wird ein Fetch gestartet
         if (companyId) {
-            fetch(`/companies/${companyId}`, {
-                headers: {
-                    "Authorization": token,
-                }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
+            get(`companies/${companyId}`) // Anfrage an den Endpunkt mit der companyId und dem Token
                 .then(data => {
-                    console.log("Fetched data:", data);
-                    data.companyId = parseInt(data.id, 10);
-                    console.log("Parsed companyId:", data.companyId);
-                    setCompanyData(data)
+                    data.companyId = parseInt(data.id, 10); // Konvertiert die ID in eine Integer-Variable
+                    setCompanyData(data) // Setzt die empfangenen Daten in den Zustand
                 })
-                .catch(error => console.error('Error fetching Company data:', error));
+                .catch(error => console.error('Error fetching Company data:', error)); // Fehlerhandling
         }
-    }, [companyId, token]);
+    }, [companyId]);
 
-    // Nur rendern, wenn companyData geladen ist
+    // Die Komponente Profile wird nur gerendert, wenn companyData geladen ist
     return companyData ? (
         <Profile companyData={companyData} userType="COMPANYUSER" />
     ) : (
-        <div>Loading Company Data...</div>
+        <div>Loading Company Data...</div> // Anzeige eines Ladehinweises, solange die Daten fehlen
     );
 }
 

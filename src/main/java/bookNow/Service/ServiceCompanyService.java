@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Diese Service-Klasse behandelt die Geschäftslogik für die Verwaltung von Dienstleistungen von Firmen.
+ */
 @Service
 public class ServiceCompanyService {
 
@@ -22,11 +25,13 @@ public class ServiceCompanyService {
     @Autowired
     private CompanyService companyService;
 
+    // Konstruktor für die Injektion von ServiceRepository und CompanyService
     public ServiceCompanyService(ServiceRepository serviceRepository, CompanyService companyService) {
         this.serviceRepository = serviceRepository;
         this.companyService = companyService;
     }
 
+    // Methode zum Erstellen eines neuen Service für eine Firma
     public ServiceCompanyModel createServiceCompany(ServiceCompanyRequest newServiceCompany, Long id) {
 
         CompanyModel company = companyService.findById(id);
@@ -55,6 +60,7 @@ public class ServiceCompanyService {
         
     }
 
+    // Methode zum Abrufen aller Services einer bestimmten Firma oder aller Firmen
     public List<ServiceCompanyResponse> getAllServiceCompanies(Optional<Long> companyId) {
         List<ServiceCompanyModel> listServices;
         if(companyId.isPresent()) {
@@ -66,10 +72,12 @@ public class ServiceCompanyService {
 
     }
 
+    // Methode zum Suchen eines Service nach seiner ID
     public ServiceCompanyModel findByServiceId(Long serviceId) {
         return serviceRepository.findById(serviceId).orElse(null);
     }
 
+    // Methode zum Aktualisieren eines bestehenden Service
     public ServiceCompanyModel updateService(Long serviceId, ServiceCompanyUpdate updatedService) {
         Optional<ServiceCompanyModel> service = serviceRepository.findById(serviceId);
         if (service.isPresent()) {
@@ -84,10 +92,10 @@ public class ServiceCompanyService {
         }
     }
 
+    // Methode zum Löschen eines Service basierend auf seiner ID
     public void deleteService(Long serviceId) {
         serviceRepository.deleteById(serviceId);
     }
 
-    // Weitere Methoden für Update, Delete usw.
 }
 

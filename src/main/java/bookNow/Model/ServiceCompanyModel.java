@@ -1,14 +1,14 @@
 package bookNow.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
-import java.util.List;
 
+/**
+ * Repräsentiert ein ServiceCompany-Model, das die Serviceleistungen eines Unternehmens speichert.
+ */
 @Entity
 @Table(name = "service_companies")
 public class ServiceCompanyModel {
@@ -32,7 +32,6 @@ public class ServiceCompanyModel {
 
 
     // Getters und Setters
-
     public Long getServiceId() {
         return id;
     }

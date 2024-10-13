@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * Repräsentiert ein Company-Model in der Datenbank, das die Daten eines Unternehmens speichert.
+ */
 @Data
 @Entity
 @Table(name = "companies")
@@ -15,24 +18,17 @@ public class CompanyModel {
     private Long id;
 
     private String companyName;
-
     private String companyAddress;
-
     private String companyCity;
-
     private int companyPostalCode;
-
     private String phoneNumber;
-
     private String description;
-
     private String password;
 
     @Enumerated(EnumType.STRING)
     private UserType userType; // Enum für Endnutzer und Firmenkonto
 
     // Getters und Setters
-
     public Long getid() {
         return id;
     }

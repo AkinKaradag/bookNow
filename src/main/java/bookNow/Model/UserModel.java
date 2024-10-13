@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+/**
+ * Repräsentiert ein User-Model, das die Daten eines Nutzers speichert.
+ */
 @Entity
 @Table(name = "users")
 public class UserModel {
@@ -21,7 +24,6 @@ public class UserModel {
     private UserType userType; // Enum für Endnutzer und Firmenkonto
 
     // Getters und Setters
-
     public Long getId() {
         return id;
     }

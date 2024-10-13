@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Diese Klasse dient als Einstiegspunkt für nicht authentifizierte Anfragen.
+ * Sendet einen 401-Fehlercode (Unauthorized) zurück, wenn eine Authentifizierung erforderlich ist.
+ */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override

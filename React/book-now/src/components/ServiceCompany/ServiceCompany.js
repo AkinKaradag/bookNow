@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-//import ReactDOM from 'react-dom';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
@@ -17,8 +16,18 @@ import {makeStyles} from "@mui/styles";
 import {Link} from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import {format} from "date-fns";
+import useApiRequest from "../APIServices/ApiRequest";
 
 
+/**
+ * Die ServiceCompany-Komponente zeigt die Details eines Service-Unternehmens an.
+ * Abhängig vom Benutzertyp kann ein Benutzer Termine buchen (für PRIVATEUSER) oder
+ * die Services bearbeiten und löschen (für COMPANYUSER).
+ * Das Layout enthält erweiterbare Inhalte, um zusätzliche Details anzuzeigen.
+ */
+
+
+// Stile für die Komponente definieren
 const useStyle = makeStyles((theme) => ({
     root: {
         width: 800,
@@ -44,7 +53,7 @@ const useStyle = makeStyles((theme) => ({
 interface ExpandMoreProps extends IconButtonProps {
     expand: boolean;
 }
-
+// Style für den Expand-Button definieren
 const ExpandMore = styled((props: ExpandMoreProps) => {
     const { expand, ...other } = props;
     return <IconButton {...other} />;
@@ -69,43 +78,50 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
     ],
 }));
 
+// Hauptkomponente
 function ServiceCompany(props) {
 
-    const {serviceId, title, description, price, duration, companyId, companyName, refreshServiceCompany, appointmentId, isCompanyService} = props;
-    const [expanded, setExpanded] = React.useState(false);
+    // Props-Variablen für die Komponente
+    const {serviceId, title, description, price, duration, companyId, companyName, refreshServiceCompany, isCompanyService} = props;
+
+    // Verschiedene State-Variablen für die Komponente
+    const [expanded, setExpanded] = React.useState(false); // Steuerung der erweiterten Ansicht
     const classes = useStyle();
-    const [liked, setLiked] = useState(false);
-    const [openBookingForm, setOpenBookingForm] = useState(false);
-    const [appointmentDate, setAppointmentDate] = useState('');
-    const [appointmentTime, setAppointmentTime] = useState('');
-    const userType = localStorage.getItem("userType");
-    const [refresh, setRefresh] = useState(false)
-    const [services, setServices] = useState(false);
-    const [editMode, setEditMode] = useState(false);
-    const [updatedService, setUpdatedService] = useState({
+    const [liked, setLiked] = useState(false); // Gefällt-mir-Status
+    const [openBookingForm, setOpenBookingForm] = useState(false); // Buchungsdialog-Status
+    const [appointmentDate, setAppointmentDate] = useState(''); // Termin-Datum
+    const [appointmentTime, setAppointmentTime] = useState(''); // Termin-Zeit
+    const userType = localStorage.getItem("userType"); // Benutzertyp
+    const [editMode, setEditMode] = useState(false); // Bearbeitungsmodus
+    const { post, put, del } = useApiRequest();
+    const [updatedService, setUpdatedService] = useState({ // Service-Details im Bearbeitungsmodus
         name: title,
         description: description,
         price: price,
         duration: duration
     });
 
-
+    // Funktion zum Umschalten der erweiterten Ansicht
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
+    // Funktion für Gefällt-mir-Button
     const handleLike = () => {
         setLiked(!liked);
     }
 
+    // Funktion zum Öffnen des Buchungsdialoges
     const handleBookingOpen = () => {
         setOpenBookingForm(true);
     };
 
+    // Funktion zum Schliessen des Buchungsdialoges
     const handleBookingClose = () => {
         setOpenBookingForm(false);
     };
 
+    // Funktion für das Absenden der Buchung
     const handleBookingSubmit = () => {
         const bookingData = {
             appointmentDate: format(new Date(appointmentDate), 'dd-MM-yyyy'),
@@ -114,31 +130,18 @@ function ServiceCompany(props) {
             userId: localStorage.getItem("currentUser"),
             companyId: companyId
         };
-        console.log("Token: " + localStorage.getItem("tokenKey"));
-        console.log("Service ID:", props.serviceId);
-        console.log("Booking Data:", bookingData);
 
-        fetch("/appointments", {
-            method: "POST",
-            headers: {
-                "content-Type": "application/json",
-                "Authorization": localStorage.getItem("tokenKey")
-            },
-            body: JSON.stringify(bookingData)
-        })
-            .then((res) => {
-                console.log("Response Status: ", res.status);
-                return res.text();
-            })
-            .then((text) => {
-                console.log("Response status:", text);
-                handleBookingClose();
+        // Anfrage zum Buchen eines Termins
+        post('/appointments', bookingData)
+            .then(() => {
+                handleBookingClose(); // Dialog schliessen nach erfolgreicher Buchung
             })
             .catch((err) => {
                 console.error("Error booking appointment:", err);
             });
     };
 
+    // Funktion zur Aktualisierung der Eingabefelder bei Bearbeitung
     const handleInputChange = (i) => {
         const {name, value} = i.target;
         setUpdatedService({
@@ -147,67 +150,53 @@ function ServiceCompany(props) {
         });
     };
 
+    // Funktion zum Aktivieren des Bearbeitungsmodus
     const handleEdit = () => {
         setEditMode(true);
     };
-    console.log("Service ID:", serviceId); // Prüfen, ob serviceId korrekt empfangen wird
-    const handleSave = (serviceId) => {
-        if (!serviceId) {
-            console.error("Fehler: serviceId ist nicht definiert.");
-            return;
-        }
 
-        fetch(`service-companies/${serviceId}`, {
-
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": localStorage.getItem("tokenKey"),
-            },
-            body: JSON.stringify(updatedService)
-        })
-            .then((res) => res.json())
-            .then(() => {
-                setEditMode(false);
-                refreshServiceCompany();
-            })
-            .catch((err) => console.error("Update failed", err));
+    // Funktion zum Abbrechen der Bearbeitung und zum Zurücksetzen der Werte
+    const handleCancel = () => {
+        setEditMode(false);
+        // Setze den Zustand zurück, falls nötig
+        setUpdatedService({
+            name: title,
+            description: description,
+            price: price,
+            duration: duration
+        });
     };
 
+    // Funktion zum Speichern der bearbeiteten Service-Daten
+    const handleSave = (serviceId) => {
+        put(`service-companies/${serviceId}`, updatedService)
+            .then(() => {
+                refreshServiceCompany(); // Aktualisiert die Service-Liste nach Speichern
+                })
+
+            .catch((err) => {
+                 console.error("Update failed", err);
+            })
+            .finally(() => {
+                setEditMode(false); // Schaltet Bearbeitungsmodus aus
+                refreshServiceCompany();
+});
+    };
+
+    // Funktion zum Löschen des Services
     const handleDelete = () => {
-        fetch(`/service-companies/${serviceId}`, {
-            method:"DELETE",
-            headers: {
-                "Authorization": localStorage.getItem("tokenKey"),
-            },
-        })
-            .then((res) => {
-                if (res.ok) {
-                    refreshServiceCompany();
-                }
+        del(`service-companies/${serviceId}`)
+            .then(() => {
+                    refreshServiceCompany(); // Aktualisiert die Service-Liste nach Löschen
+
             })
             .catch((err) => console.error("Delete failed", err));
     }
 
     useEffect(() => {
-        //fetchAllServices();
-        //console.log("ServiceId: ", serviceId);
+
     }, []);
 
-
-    /*const fetchAllServices = () => {
-        fetch("/service-companies", {
-            headers: {
-                "Authorization": localStorage.getItem("tokenKey")
-            }
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                console.log("Services data on overview page:", data); // <== Logge die Daten hier
-                setServices(data);
-            })
-            .catch((err) => console.error("Error fetching services", err));
-    };*/
 
     return(
         <div className="serviceContainer">
@@ -216,7 +205,7 @@ function ServiceCompany(props) {
                     avatar={
                         <Link className={classes.link} to={{pathname : 'companies/' + companyId}}>
                             <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                                {/*companyName.charAt(0).toUpperCase()*/}
+                                {companyName.charAt(0).toUpperCase()}
                             </Avatar>
                         </Link>
                     }
@@ -257,14 +246,17 @@ function ServiceCompany(props) {
                             <Button onClick={() => handleSave(serviceId)} variant="contained" color="primary">
                                 Save
                             </Button>
+                            <Button onClick={handleCancel} variant="contained" color="secondary" style={{ marginLeft: '10px' }}>
+                                Cancel
+                            </Button>
                         </div>
                     ): (
                         <>
                             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                {price}
+                                CHF {price}.-
                             </Typography>
                             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                {duration}
+                                {duration} Min
                             </Typography>
                         </>
                     ) }
@@ -304,7 +296,6 @@ function ServiceCompany(props) {
                         <FavoriteIcon style={liked? {color: "red"}: null}/>
                     </IconButton>
 
-
                     <ExpandMore
                         expand={expanded}
                         onClick={handleExpandClick}
@@ -337,7 +328,6 @@ function ServiceCompany(props) {
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
                         <Typography>{description}</Typography>
-
 
                     </CardContent>
                 </Collapse>

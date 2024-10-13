@@ -17,6 +17,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Diese Klasse ist ein Filter, der auf jeder Anfrage ausgeführt wird, um das JWT-Token zu überprüfen.
+ * Wenn das Token gültig ist, wird der Benutzer authentifiziert und im SecurityContext gespeichert.
+ */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -25,7 +29,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
+    /**
+     * Überschreibt die Methode, um bestimmte URLs wie "/auth/register" und "/auth/login" von der Filterung auszuschliessen.
+     */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return path.startsWith("/auth/register") || path.startsWith("/auth/login");
+    }
 
+    /**
+     * Überprüft das JWT-Token in der Anfrage und authentifiziert den Benutzer, falls das Token gültig ist.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -72,7 +87,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-
+    /**
+     * Extrahiert das JWT-Token aus dem Authorization-Header der Anfrage.
+     */
     private String extractJwtFromRequest(HttpServletRequest request) {
         System.out.println("Authorization Header: " + request.getHeader("Authorization"));
 

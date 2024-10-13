@@ -5,14 +5,15 @@ import CardHeader from "@mui/material/CardHeader";
 import {Link} from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import CardContent from "@mui/material/CardContent";
-import {Button, styled} from "@mui/material";
+import {Button} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
-import IconButton, {IconButtonProps} from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import {red} from "@mui/material/colors";
 import {makeStyles} from "@mui/styles";
+import useApiRequest from "../APIServices/ApiRequest";
 
 const useStyle = makeStyles((theme) => ({
     root: {
@@ -40,51 +41,32 @@ const useStyle = makeStyles((theme) => ({
     },
 }));
 
-interface ExpandMoreProps extends IconButtonProps {
-    expand: boolean;
-}
-
-const ExpandMore = styled((props: ExpandMoreProps) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-})(({ theme }) => ({
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-    }),
-    variants: [
-        {
-            props: ({ expand }) => !expand,
-            style: {
-                transform: 'rotate(0deg)',
-            },
-        },
-        {
-            props: ({ expand }) => !!expand,
-            style: {
-                transform: 'rotate(180deg)',
-            },
-        },
-    ],
-}));
-
+/**
+ * UpdateAppointment-Komponente zeigt und bearbeitet Termine und ermöglicht die Anzeige von Detailinformationen.
+ *
+ * @param {Object} props - Die Komponenteneigenschaften, bestehend aus aptData (Termin-Daten) und refreshAppointments (Funktion zum Aktualisieren).
+ */
 function UpdateAppointment({ appointment: aptData, refreshAppointments }) {
     const classes = useStyle();
     const [expanded, setExpanded] = useState(false);
     const [editMode, setEditMode] = useState(false);
+    const appointmentId = aptData.appointmentId;
     const [updatedAppointment, setUpdatedAppointment] = useState({
         appointmentDate: aptData.appointmentDate,
         appointmentTime: aptData.appointmentTime,
     });
 
+    // ApiRequest Hook importieren und Methoden extrahieren
+    const { get, put, del } = useApiRequest();
+
+    /**
+     * useEffect lädt die aktuellen Termindaten, falls eine appointmentId vorhanden ist,
+     * und formatiert das Datum entsprechend.
+     */
     useEffect(() => {
         if (aptData.appointmentId) {
-            fetch(`/appointments/${aptData.appointmentId}`, {
-                headers: {
-                    'Authorization': localStorage.getItem('tokenKey'),
-                },
-            })
-                .then((res) => res.json())
+
+            get(`appointments/${aptData.appointmentId}`)
                 .then((data) => {
 
                     // Formatieren des Datums
@@ -99,14 +81,23 @@ function UpdateAppointment({ appointment: aptData, refreshAppointments }) {
         }
     }, [aptData.appointmentId]);
 
+    /**
+     * Umschalten der Sichtbarkeit der Detailinformationen.
+     */
     const handleExpandClick = () => {
         setExpanded(prevState => !prevState);
     };
 
+    /**
+     * Aktiviert den Bearbeitungsmodus.
+     */
     const handleEdit = () => {
         setEditMode(prevState => !prevState);
     };
 
+    /**
+     * Handhabt Änderungen an den Eingabefeldern und aktualisiert den Zustand.
+     */
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setUpdatedAppointment(prev => ({
@@ -115,17 +106,11 @@ function UpdateAppointment({ appointment: aptData, refreshAppointments }) {
         }));
     };
 
-    const appointmentId = aptData.appointmentId;
 
+    /**
+     * Speichert die bearbeiteten Termindaten und sendet sie an das Backend.
+     */
     const handleSave = () => {
-        console.log("AptData:", aptData);  // Prüfen, ob aptData korrekt vorhanden ist
-
-        console.log("Appointment ID:", appointmentId);
-        if (!appointmentId) {
-            console.error("Fehler: Termin-ID ist nicht definiert.");
-            return;
-        }
-
         // Formatieren der Daten für das Backend
         const formattedDate = updatedAppointment.appointmentDate.split('-').reverse().join('-');  // dd-MM-yyyy
         const formattedTime = updatedAppointment.appointmentTime;  // HH:mm bleibt unverändert
@@ -135,44 +120,25 @@ function UpdateAppointment({ appointment: aptData, refreshAppointments }) {
             appointmentTimeRequest: formattedTime,
         };
 
-        console.log("Update Appointment: ", requestBody, "Appointment ID: ", aptData.id);
-
-        fetch(`/appointments/${appointmentId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                "Authorization": localStorage.getItem('tokenKey'),
-            },
-            body: JSON.stringify(requestBody),
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error(`Error updating appointment: ${res.statusText}`);
-                }
-                return res.json()
-            })
+        put(`appointments/${appointmentId}`, requestBody)
             .then(() => {
-                setEditMode(false);
-                refreshAppointments();
+                setEditMode(false); // Beenden des Bearbeitungsmodus
+                refreshAppointments(); // Aktualisieren der Terminliste
             })
             .catch((err) => console.log('Error updating appointment:', err));
     };
 
+    /**
+     * Löscht den Termin und aktualisiert die Terminliste.
+     */
     const handleDelete = () => {
-        fetch(`/appointments/${appointmentId}`, {
-            method: 'DELETE',
-            headers: {
-                "Authorization": localStorage.getItem('tokenKey'),
-            },
-        })
-            .then((res) => {
-                if (res.ok) {
-                    refreshAppointments(); // Refresh the appointments after deletion
-                }
+        del(`appointments/${appointmentId}`)
+            .then(() => {
+
+                    refreshAppointments();
             })
             .catch((err) => console.error('Delete failed', err));
     };
-
 
     return (
         <Card className={classes.root}>

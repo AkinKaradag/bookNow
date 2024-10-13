@@ -14,19 +14,28 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 
+/**
+ * Diese Klasse verwaltet die Erstellung und Validierung von JWT-Tokens.
+ * Das Token enthält Benutzer-ID und Benutzer-Typ, die für die Authentifizierung und Autorisierung verwendet werden.
+ */
 @Component
 public class JwtTokenProvider {
 
     @Value("${bookNow.app.secret}")
-    private String APP_SECRET;
+    private String APP_SECRET; // Geheimschlüssel für die Signatur des Tokens
     @Value("${bookNow.app.expires.in}")
-    private long EXPIRES_IN;
+    private long EXPIRES_IN; // Token-Ablaufzeit in Sekunden
 
+    /**
+     * Liefert den geheimen Schlüssel für die Token-Generierung und Validierung.
+     */
     public SecretKey getKey() {
         return Keys.hmacShaKeyFor(APP_SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
-
+    /**
+     * Erstellt ein JWT-Token für die angegebene Authentifizierung.
+     */
     public String generateJwtToken(Authentication auth) {
 
         JwtUserDetails userDetails = (JwtUserDetails) auth.getPrincipal();
@@ -44,6 +53,21 @@ public class JwtTokenProvider {
                 .signWith(getKey())
                 .compact();
     }
+
+    /**
+     * Erstellt ein JWT-Token basierend auf der Benutzer-ID und dem Benutzer-Typ.
+     */
+    public String generateJwtTokenById(Long id, UserType userType) {
+        Date expireDate = new Date(new Date().getTime() + EXPIRES_IN * 1000);
+        return Jwts.builder()
+                .claim("id", id)
+                .claim("userType", userType.toString())
+                .claim("issuedAt", new Date())
+                .claim("exp", expireDate)
+                .signWith(getKey())
+                .compact();
+    }
+
 
 
     Long getUserIdFromJwt(String token) {
@@ -81,6 +105,9 @@ public class JwtTokenProvider {
         return UserType.valueOf(claim.get("userType", String.class));
     }
 
+    /**
+     * Überprüft, ob das angegebene Token gültig ist.
+     */
     boolean validateToken(String token) {
         SecretKey key = getKey();
         try {
@@ -94,6 +121,9 @@ public class JwtTokenProvider {
         }
     }
 
+    /**
+     * Überprüft, ob das angegebene Token abgelaufen ist.
+     */
     private boolean isTokenExpired(String token) {
         try {
         Date expiration = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload().getExpiration();

@@ -10,6 +10,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * Repräsentiert ein Appointment-Model in der Datenbank, welches die Daten eines Termins enthält.
+ */
+
 @Entity
 @Table (name = "appointments")
 public class AppointmentModel {
@@ -44,7 +48,6 @@ public class AppointmentModel {
     UserModel user;
 
     // Getters und Setters
-
     public Long getAppointmentId() {
         return id;
     }

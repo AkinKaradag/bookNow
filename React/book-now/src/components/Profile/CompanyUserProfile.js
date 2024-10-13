@@ -2,6 +2,10 @@ import React, {useEffect, useState} from 'react';
 import { Button, Card, CardContent, CardActions, TextField, Typography } from '@mui/material';
 import {makeStyles} from "@mui/styles";
 
+/**
+ * Diese Komponente zeigt die Profildaten eines COMPANYUSER und ermöglicht deren Bearbeitung.
+ * */
+
 const useStyles = makeStyles({
     root: {
         margin: 'auto',
@@ -15,6 +19,7 @@ const useStyles = makeStyles({
 
 function CompanyUserProfile({ companyData, onSave }) {
     const classes = useStyles();
+    // Initialisiert den Zustand für die bearbeiteten Firmendaten
     const [editedData, setEditedData] = useState({
         companyId: companyData.companyId,
         companyName: companyData.companyName,
@@ -23,9 +28,10 @@ function CompanyUserProfile({ companyData, onSave }) {
         companyPostalCode: companyData.companyPostalCode,
         phoneNumber: companyData.phoneNumber,
         description: companyData.description,
-        password: companyData.password
+        password: ""
     });
 
+    // Aktualisiert die Firmendaten im Zustand, falls sich die übergebenen Daten ändern
     useEffect(() => {
         if (companyData) {
             setEditedData({
@@ -36,29 +42,33 @@ function CompanyUserProfile({ companyData, onSave }) {
                 companyPostalCode: companyData.companyPostalCode,
                 phoneNumber: companyData.phoneNumber,
                 description: companyData.description,
-                password: companyData.password
+                password: ""
             });
         }
     }, [companyData]);
 
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(false); // Steuert den Bearbeitungsmodus
 
+    // Aktualisiert die bearbeiteten Daten, wenn der Benutzer Eingaben macht
     const handleChange = (e) => {
         const { name, value } = e.target;
         setEditedData({ ...editedData, [name]: value });
     };
 
+    // Speichert die Änderungen und schliesst den Bearbeitungsmodus
     const handleSaveClick = () => {
         onSave(editedData);
         setIsEditing(false);
     };
 
+    // Zeigt einen Ladehinweis an, solange die Firmendaten nicht geladen sind
     if (!companyData) return <div>Loading...</div>; // Anzeige eines Ladehinweises, solange die Daten fehlen
 
     return (
         <Card className={classes.root}>
             <CardContent>
                 <Typography variant="h5">Company User Profile</Typography>
+                {/* Eingabefelder für die Firmendaten, bearbeitbar nur im Bearbeitungsmodus */}
                 <TextField
                     label="Company Name"
                     name="companyName"
@@ -112,6 +122,7 @@ function CompanyUserProfile({ companyData, onSave }) {
                     disabled={!isEditing} />
             </CardContent>
             <CardActions>
+                {/* Schaltflächen zum Speichern oder Abbrechen der Änderungen */}
                 {isEditing ? (
                     <>
                         <Button onClick={handleSaveClick} variant="contained" color="primary" style={{marginLeft: 'auto'}}>Save</Button>

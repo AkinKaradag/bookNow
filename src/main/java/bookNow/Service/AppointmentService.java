@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Diese Service-Klasse enthält die Geschäftslogik für das Verwalten von Terminen.
+ */
 @Service
 public class AppointmentService {
 
@@ -24,6 +27,7 @@ public class AppointmentService {
     private CompanyService companyService;
     private ServiceCompanyService serviceCompanyService;
 
+    // Konstruktor-Injektion für die Abhängigkeiten des Services
     public AppointmentService(AppointmentRepository appointmentRepository, UserService userService, CompanyService companyService, ServiceCompanyService serviceCompanyService) {
         this.appointmentRepository = appointmentRepository;
         this.userService = userService;
@@ -31,6 +35,7 @@ public class AppointmentService {
         this.serviceCompanyService = serviceCompanyService;
     }
 
+    // Methode zum Erstellen eines neuen Termins
     public AppointmentModel createAppointment(AppointmentCreateRequest newAppointment) {
         UserModel user = userService.findByUserId(newAppointment.getUserId());
         CompanyModel company = companyService.findById(newAppointment.getCompanyId());
@@ -48,6 +53,7 @@ public class AppointmentService {
             return appointmentRepository.save(toSave);
        }
 
+    // Methode zum Abrufen aller Termine basierend auf verschiedenen optionalen Filtern
         public List<AppointmentResponse> getAllAppointments (Optional <Long> userId, Optional <Long> serviceId, Optional <Long> companyId){
             List<AppointmentModel> listAppointments;
             if (userId.isPresent()) {
@@ -62,10 +68,12 @@ public class AppointmentService {
             return listAppointments.stream().map(AppointmentResponse::new).collect(Collectors.toList());
         }
 
+    // Methode zum Suchen eines Termins nach seiner ID
         public AppointmentModel findByAppointmentId(Long appointmentId){
             return appointmentRepository.findById(appointmentId).orElse(null);
         }
 
+    // Methode zum Aktualisieren eines Termins
         public AppointmentModel updateAppointment(Long appointmentId, AppointmentUpdateRequest updatedAppointment){
             Optional<AppointmentModel> appointment = appointmentRepository.findById(appointmentId);
             if (appointment.isPresent()) {
@@ -79,6 +87,7 @@ public class AppointmentService {
 
         }
 
+    // Methode zum Löschen eines Termins anhand seiner ID
         public void deleteAppointment (Long appointmentId){
             appointmentRepository.deleteById(appointmentId);
 

@@ -1,55 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import IconButton from '@mui/material/IconButton';
-import { styled } from '@mui/material';
-import { IconButtonProps } from '@mui/material/IconButton';
-import { makeStyles } from '@mui/styles';
 import UpdateAppointment from "./UpdateAppointment";
+import useApiRequest from "../APIServices/ApiRequest";
 
-const useStyle = makeStyles((theme) => ({
-    root: {
-        width: 800,
-        textAlign: 'left',
-        margin: 20,
-    },
-    appointmentList: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        width: '100%'
-    },
-    media: {
-        height: 0,
-        paddingTop: '56.25%',
-    },
-    avatar: {
-        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-    },
-    link: {
-        textDecoration: 'None',
-        boxShadow: 'None',
-        color: 'white',
-    },
-}));
-
-
-function Appointment(props) {
-    const {appointmentId, appointmentDate, appointmentTime, serviceId, companyId, companyName, userId, refreshAppointments } = props;
-    const classes = useStyle();
+/**
+ * Die Appointment-Komponente zeigt eine Liste von Terminen für den eingeloggten Benutzer an.
+ * Je nach Benutzertyp (PRIVATEUSER oder COMPANYUSER) werden die Termine entweder
+ * des Benutzers oder der zugehörigen Firma geladen.
+ */
+function Appointment() {
+    // useState-Hook, um den Zustand der Termine zu verwalten
     const [appointments, setAppointments] = useState([])
 
+    const { get } = useApiRequest();
 
-    const userType = localStorage.getItem('userType');
+    // Laden von UserId, CompanyId und UserType aus dem Local Storage
+    const userId = localStorage.getItem("currentUser");
+    const companyId = localStorage.getItem("companyId");
+    const userType = localStorage.getItem("userType");
 
-
-
-
-
-
-
-    const fetchAppointments = () => {
-        const userId = localStorage.getItem("currentUser");
-        const companyId = localStorage.getItem("companyId");
-        const userType = localStorage.getItem("userType");
+    /**
+     * fetchAppointments ruft Termine vom Server ab, basierend auf dem Benutzertyp.
+     * Wenn der Benutzer ein PRIVATEUSER ist, werden nur seine Termine geladen,
+     * bei COMPANYUSER werden alle Termine der Firma geladen.
+     */
+    const fetchAppointments = async () => {
 
         let endpoint = "/appointments";
 
@@ -59,52 +33,16 @@ function Appointment(props) {
             endpoint += `?companyId=${companyId}`;
         }
 
-        fetch(endpoint, {
-            headers: {
-                "Authorization": localStorage.getItem("tokenKey"),
-            },
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error('Netzwerkantwort war nicht ok');
-                }
-                return res.json();
-            })
-            .then((appointmentsData) => {
-                return Promise.all(appointmentsData.map(async (appointment) =>{
-                    //console.log("Service ID:", appointment.serviceId);
-                    //console.log("Company ID:", appointment.companyId);
-                    const serviceResponse = await fetch(`/service-companies/${appointment.serviceId}`, {
-                        headers: {
-
-                                    "Authorization": localStorage.getItem("tokenKey"),
-                        }
-                    });
-                    const companyResponse = await fetch(`/companies/${appointment.companyId}`,{
-                        headers: {
-                            "Authorization": localStorage.getItem("tokenKey"),
-                        }
-                    });
-
-                    const serviceData = await serviceResponse.json();
-                    const companyData = await companyResponse.json();
-
-                        return {
-                            ...appointment,
-                            serviceName: serviceData.name,
-                            companyName: companyData.companyName,
-                        };
-
-                    }));
-
-            })
-            .then((updatedAppointment) => setAppointments(updatedAppointment))
-            .catch((err) => {
-                console.log("Error fetching services: ", err);
-            });
+        // GET-Anfrage, um die Termine zu erhalten
+        try {
+            const appointmentsData = await get(endpoint);
+            setAppointments(appointmentsData);
+        } catch (error) {
+            console.log("Error fetching appointments:", error);
+        }
     };
 
-
+// useEffect, um fetchAppointments beim ersten Rendern der Komponente auszuführen
     useEffect(() => {
         fetchAppointments();
     }, []);
@@ -113,14 +51,13 @@ function Appointment(props) {
         <div>
             {appointments.map((appointment) => (
                 <UpdateAppointment
-                    key={appointment.id}
+                    key={appointment.appointmentId}
                     appointment={appointment}
                     refreshAppointments={fetchAppointments}
                 />
             ))}
         </div>
     );
-
 
 }
 

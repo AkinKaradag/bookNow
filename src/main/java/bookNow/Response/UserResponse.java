@@ -3,14 +3,19 @@ package bookNow.Response;
 import bookNow.Model.UserModel;
 import lombok.Data;
 
+/**
+ * Antwortklasse für Benutzerinformationen, die relevante Daten eines Benutzers enthält.
+ * Die Felder werden direkt aus einem UserModel-Objekt initialisiert.
+ */
 @Data
 public class UserResponse {
 
-    Long userId;
-    String userName;
-    String email;
-    String password;
+    Long userId; // ID des Benutzers
+    String userName; // Name des Benutzers
+    String email; // E-Mail-Adresse des Benutzers
+    String password; // Passwort des Benutzers
 
+    // Konstruktor zur Initialisierung der Antwortdaten aus einem UserModel-Objekt
     public UserResponse(UserModel entity){
         this.userId = entity.getId();
         this.userName = entity.getName();

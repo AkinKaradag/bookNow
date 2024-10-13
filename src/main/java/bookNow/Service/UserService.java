@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Diese Service-Klasse enthält die Geschäftslogik für die Verwaltung von Benutzern.
+ */
 @Service
 public class UserService {
 
@@ -19,24 +22,29 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // Konstruktor zur Injektion von UserRepository und PasswordEncoder
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Methode zum Erstellen eines neuen Benutzers
     public UserModel createUser(UserModel user) {
         return userRepository.save(user);
     }
 
+    // Methode zum Abrufen aller Benutzer
     public List<UserModel> getAllUsers() {
         return userRepository.findAll();
     }
 
+    // Methode zum Finden eines Benutzers basierend auf seiner ID
     public UserModel findByUserId(Long userId) {
         return userRepository.findById(userId).orElse(null);
     }
 
+    // Methode zum Aktualisieren eines Benutzers
     public UserModel updateUser(Long userID, UserUpdate updatedUser) {
         Optional<UserModel> user = userRepository.findById(userID);
         if (user.isPresent()) {
@@ -53,14 +61,17 @@ public class UserService {
         }
     }
 
+    // Methode zum Löschen eines Benutzers basierend auf seiner ID
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
     }
 
+    // Methode zum Suchen eines Benutzers nach seinem Namen
     public UserModel findByName(String userName) {
         return userRepository.findByName(userName);
     }
 
+    // Methode zum Suchen eines Benutzers nach seiner Email-Adresse
     public UserModel findByEmail(String email) { return userRepository.findByEmail(email);
     }
 

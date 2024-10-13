@@ -1,50 +1,27 @@
-import React, { useState, useEffect } from 'react';
-//import ReactDOM from 'react-dom';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import {Button, FormControl, FormHelperText, InputAdornment, InputLabel, OutlinedInput, styled} from "@mui/material";
-import {makeStyles} from "@mui/styles";
-import {Link} from "react-router-dom";
+import React, { useState } from 'react';
+import {Button, FormControl, InputAdornment, InputLabel, OutlinedInput} from "@mui/material";
 import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import useApiRequest from "../APIServices/ApiRequest";
+
+/**
+ * Die ServiceCompanyCreateForm-Komponente ermöglicht es Company-Usern, eine neuen Service zu erstellen.
+ * Das Formular sammelt die erforderlichen Daten wie Name, Beschreibung, Preis und Dauer und sendet diese an das Backend.
+ * Nach erfolgreichem Erstellen wird die Liste der Services aktualisiert, und eine Erfolgsmeldung angezeigt.
+ */
 
 
-const useStyle = makeStyles((theme) => ({
-    root: {
-        width: 800,
-        textAlign: "left",
-        margin: 20
-    },
-    media: {
-        height: 0,
-        paddingTop: '56.25%'
-    },
-
-    avatar: {
-        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-    },
-    link: {
-        textDecoration: "None",
-        boxShadow: "None",
-        color: "white"
-    }
-}));
-
-
+// Die Komponente für das Erstellen eines neuen Services
 function ServiceCompanyCreateForm(props) {
 
-    const {refreshServiceCompany} = props;
-    const classes = useStyle();
-    const [isSent, setIsSent] = useState(false);
+    const {refreshServiceCompany} = props; // Funktion zum Aktualisieren der Service-Liste
+    const [isSent, setIsSent] = useState(false); // Zustand für die Anzeige des Bestätigungsdialogs
+    const companyId = localStorage.getItem("companyId"); // Company-ID aus Local Storage abrufen
+    const { post } = useApiRequest(); // Zugriff auf die POST-Funktion aus der zentralen API-Logik
 
-
+    // State für die Eingabefelder im Formular
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -52,62 +29,40 @@ function ServiceCompanyCreateForm(props) {
         duration: 0
     })
 
+    // Handler für die Eingabeänderungen
     const handleInput = (i) => {
         const {name, value} = i.target;
         setFormData({
             ...formData,
             [name]: value
         });
-        setIsSent(false);
+        setIsSent(false); // Bestätigungsdialog zurücksetzen
     }
 
-
+    // Handler für das Absenden des Formulars
     const handleSubmit = () => {
-        const companyId = localStorage.getItem("companyId");
-        const token = localStorage.getItem("tokenKey");
-        console.log("Token:", token);
+        // Daten zum Absenden an das Backend vorbereiten
         const dataToSend = {
             ...formData,
             companyId: companyId
         };
-        fetch("/service-companies",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": token,
-                },
-                body: JSON.stringify(dataToSend),
-            })
-            .then((res) => {
-                console.log("Response status:", res.status); // Protokolliere den Statuscode
-                console.log("Response headers:", res.headers); // Protokolliere die Header
-                return res.text(); // Verwende .text() um den Antworttext zu erhalten
-            })
-            .then((text) => {
-                console.log("Response body as text:", text); // Ausgabe des Textes zur Fehleranalyse
-                // Versuche, den Text zu JSON zu parsen, falls die Antwort erwartet wird
-                if (text) {
-                    return JSON.parse(text);
-                } else {
-                    throw new Error("Leere Antwort erhalten");
-                }
-            })
-            .then((json) => {
-                console.log("Parsed JSON:", json);
-                setIsSent(true);
-                setFormData({
+
+        // Anfrage zum Erstellen eines neuen Services
+        post("service-companies", dataToSend)
+            .then(() => {
+                setIsSent(true); // Erfolgreich gesendet, Bestätigungsdialog anzeigen
+                setFormData({ // Eingabefelder zurücksetzen
                     name: "",
                     description: "",
                     price: '',
                     duration: ''
                 });
-                refreshServiceCompany();
+                refreshServiceCompany(); // Service-Liste aktualisieren
             })
             .catch((err) => console.log("error:", err));
     };
 
-
+    // Handler zum Schliessen des Bestätigungsdialogs
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -119,7 +74,7 @@ function ServiceCompanyCreateForm(props) {
         <div>
             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                 <div>
-
+                    {/* Eingabefeld für den Namen des Services */}
                     <TextField
                         name="name"
                         label="name"
@@ -127,7 +82,7 @@ function ServiceCompanyCreateForm(props) {
                         onChange={handleInput}
                         sx={{m: 1, width: '25ch'}}
                     />
-
+                    {/* Eingabefeld für die Beschreibung des Services */}
                     <TextField
                         name="description"
                         label="description"
@@ -138,7 +93,7 @@ function ServiceCompanyCreateForm(props) {
                         sx={{m: 1, width: '25ch'}}
                     />
 
-
+                    {/* Eingabefeld für den Preis des Services */}
                     <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
                         <InputLabel htmlFor={"outlined-adornment-price"}>Price</InputLabel>
                         <OutlinedInput
@@ -152,6 +107,7 @@ function ServiceCompanyCreateForm(props) {
                         />
                     </FormControl>
 
+                    {/* Eingabefeld für die Dauer des Services */}
                     <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
                         <InputLabel htmlFor={"outlined-adornment-duration"}>Duration</InputLabel>
                         <OutlinedInput
@@ -165,6 +121,7 @@ function ServiceCompanyCreateForm(props) {
                         />
                     </FormControl>
 
+                    {/* Button zum Absenden des Formulars */}
                     <InputAdornment position = "end">
                         <Button
                             variant="contained"
@@ -177,6 +134,7 @@ function ServiceCompanyCreateForm(props) {
 
             </Box>
 
+            {/* Snackbar für Erfolgsnachricht */}
             <Snackbar open={isSent} autoHideDuration={3000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
                     Service erfolgreich hinzugefügt!
@@ -185,7 +143,5 @@ function ServiceCompanyCreateForm(props) {
 
         </div>
     )
-
 }
-
 export default ServiceCompanyCreateForm;

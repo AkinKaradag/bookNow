@@ -22,6 +22,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+/**
+ * Diese Konfigurationsklasse definiert die Sicherheitseinstellungen für die Anwendung.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -31,28 +34,39 @@ public class SecurityConfig {
 
     private JwtAuthenticationEntryPoint handler;
 
+    // Konstruktor-Injektion für die Sicherheitskomponenten
     public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationEntryPoint handler) {
         this.userDetailsService = userDetailsService;
         this.handler = handler;
     }
 
+    /**
+     * Bean für den JWT-Authentifizierungsfilter, um Anfragen mit JWT zu verarbeiten.
+     */
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter();
     }
 
+    /**
+     * Bean für den Passwort-Encoder. Verwendet BCrypt, um Passwörter zu hashen.
+     */
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
-
+    /**
+     * Bean für den Authentication Manager, der die Authentifizierung der Benutzer verwaltet.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-
+    /**
+     * Konfiguration der CORS-Einstellungen, um Cross-Origin-Requests zu ermöglichen.
+     */
     @Bean
     public CorsConfigurationSource corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -61,17 +75,14 @@ public class SecurityConfig {
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-        /*config.addAllowedMethod("OPTIONS");
-        config.addAllowedMethod("HEAD");
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("PATCH");*/
         source.registerCorsConfiguration("/**", config);
         return source;
     }
 
+    /**
+     * Konfiguration der Sicherheitsfilterkette. Hier werden Zugriffsrechte für Endpunkte definiert,
+     * und der JWT-Authentifizierungsfilter wird in die Kette eingebunden.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

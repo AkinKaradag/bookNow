@@ -5,6 +5,14 @@ import {makeStyles} from "@mui/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
+import useApiRequest from "../APIServices/ApiRequest";
+
+/**
+ * Die CreateService-Komponente erlaubt es einem COMPANYUSER, neue Services hinzuzufügen und bestehende Services anzuzeigen.
+ * Sie zeigt ein Formular für die Erstellung von Services und eine Liste der bestehenden Services des Unternehmens an.
+ * Nur COMPANYUSER haben Zugriff auf das Erstellen und Verwalten von Services.
+ */
+
 
 const useStyle = makeStyles((theme) => ({
     container: {
@@ -28,48 +36,34 @@ const useStyle = makeStyles((theme) => ({
 
 function CreateService() {
     const classes = useStyle();
-    const [services, setServices] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const userType = localStorage.getItem("userType");
+    const [services, setServices] = useState([]); // Zustand für die Liste der Services
+    const [loading, setLoading] = useState(true); // Zustand zur Verwaltung des Ladezustands
+    const userType = localStorage.getItem("userType"); // Benutzertyp aus dem Local Storage
+    const companyId = localStorage.getItem("companyId"); // ID der eingeloggten Firma
+    const { get } = useApiRequest(); // Zugriff auf die GET-Funktion aus der zentralen API-Logik
 
-    console.log("UserType:", userType);
-
-    // Fetch services for the logged-in company
+    // Funktion, um die Services der eingeloggten Firma zu laden
     const fetchServices = () => {
-        const companyId = localStorage.getItem("companyId");
-        console.log("Sende Anfrage an: ", `/service-companies?companyId=${companyId}`);
-        console.log("Fetched companyId from Local Storage: ", companyId);
 
-
-        fetch(`/service-companies?companyId=${companyId}`, {
-            headers: {
-                "Authorization": localStorage.getItem("tokenKey")
-            }
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error('Netzwerkantwort war nicht ok');
-                }
-                return res.json();
-            })
+        get(`service-companies?companyId=${companyId}`)
                 .then((result) => {
-                    console.log("API Response: ", result);
-                    setServices(result);
-                    setLoading(false);
+                    setServices(result); // Speichert die abgerufenen Services im Zustand
+                    setLoading(false); // Beendet den Ladezustand
                 })
 
             .catch((err) => {
-                console.log("Error fetching services:", err);
-                setLoading(false);
+                console.log("Error fetching services:", err); // Fehler bei der Abfrage
+                setLoading(false); // Beendet den Ladezustand auch bei Fehlern
             });
     };
 
+    // Hilfsfunktion zur Auffrischung der Service-Liste
     const refreshServiceCompany = () => {
         fetchServices()
     }
 
+    // useEffect-Hook, um die Services beim ersten Rendern zu laden
     useEffect(() => {
-        //console.log("Aktueller Services-State", services)
         fetchServices();
     }, []);
 
@@ -78,7 +72,7 @@ function CreateService() {
             <h2>Create a New Service</h2>
 
             <p>User Type is: {userType}</p>
-
+            {/* Formular zur Erstellung eines neuen Services, nur für Company-User */}
             {userType && userType.toUpperCase() === "COMPANYUSER" ? (
                 <Card className={classes.root}>
                     <CardHeader title="Create a New Service" />
@@ -92,7 +86,7 @@ function CreateService() {
 
             <h2>Company Services</h2>
 
-            {/* Display list of services */}
+            {/* Liste der Services anzeigen, nur für Company-User */}
             {userType === "COMPANYUSER" && (
             <div className={classes.servicesList}>
                 {loading ? (

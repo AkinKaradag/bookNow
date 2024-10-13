@@ -3,10 +3,11 @@ import {Button, FormControl, FormHelperText, Input, InputLabel} from "@mui/mater
 import {Link} from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import {postWithoutAuth} from "../APIServices/ApiPost";
 
 
 function Register(){
-
+    // Zustandsvariablen für Formulardaten und Benutzer-Typ
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -17,13 +18,14 @@ function Register(){
         companyPostalCode: "",
         phoneNumber: "",
         description: "",
-        userType: "PRIVATEUSER"
+        userType: "PRIVATEUSER" // Standardwert für Benutzer-Typ
 
     })
 
     const options = ['PRIVATEUSER', 'COMPANYUSER'];
-    const [inputValue, setInputValue] = React.useState('');
+    const [inputValue, setInputValue] = React.useState(''); // Zustand für Autocomplete-Feld
 
+    // Handler für Eingabefelder
     const handleInput = (i) => {
         const {name, value} = i.target
         setFormData({
@@ -32,10 +34,11 @@ function Register(){
         });
     }
 
-
+    // Funktion zur Registrierung
     const sendRequest = () => {
         const path = formData.userType === "COMPANYUSER" ? "/company" : "/private";
 
+        // Erstellen des Anfragedatensatzes basierend auf dem Benutzer-Typ
         const finalFormData = formData.userType === "COMPANYUSER" ?{
             companyName: formData.companyName,
             companyAddress: formData.companyAddress,
@@ -52,15 +55,10 @@ function Register(){
             userType: formData.userType
         }
 
-        fetch("/auth/register"+path, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(finalFormData),
-        })
-            .then((res) => res.json())
+        // Senden der Anfrage ohne Authentifizierung
+        postWithoutAuth(`auth/register${path}`, finalFormData)
             .then((result) => {
+                // Speichern der Daten im Local Storage basierend auf dem Benutzer-Typ
                 if(result.userType === 'COMPANYUSER') {
                     localStorage.setItem("id", result.id);
                     localStorage.setItem("companyName", formData.companyName)
@@ -68,12 +66,14 @@ function Register(){
                     localStorage.setItem("currentUser", result.userId);
                     localStorage.setItem("userName",formData.name);
                 }
-                localStorage.setItem("tokenKey", result.message);
+                localStorage.setItem("tokenKey", result.accessToken)
+                localStorage.setItem("refreshKey", result.refreshToken)
 
                 })
             .catch((err) => console.log(err))
     }
 
+    // Handler für den Registrierungsbutton, setzt nach Registrierung alle Felder zurück
     const handleButton = () => {
         sendRequest()
         setFormData({
@@ -94,8 +94,7 @@ function Register(){
 
     return(
         <FormControl>
-
-
+            {/* Anzeige der Eingabefelder basierend auf dem Benutzer-Typ */}
             {formData.userType === 'COMPANYUSER' ? (
                 <>
                 <InputLabel style={{top:40}}>Company Name</InputLabel>
@@ -175,7 +174,7 @@ function Register(){
 
                 </>
             )}
-
+            {/* Auswahlfeld für den Benutzer-Typ */}
             <Autocomplete
 
                 value={formData.userType}
@@ -195,15 +194,14 @@ function Register(){
                 renderInput={(params) => <TextField style={{top: 190}} {...params} label="User-Typ" />}
             />
 
-
-
-
+            {/* Registrierungsbutton */}
             <Button variant="contained"
                     style = {{marginTop: 210,
                         background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 60%)',
                         color: "white"}}
                     onClick={() => handleButton("register")}>Register</Button>
 
+            {/* Link zur Login-Seite */}
             <FormHelperText style={{margin: 5}}>Are you already registered?</FormHelperText>
             <Link style={{marginTop: 20}} to="/auth/login">Sign in</Link>
         </FormControl>
