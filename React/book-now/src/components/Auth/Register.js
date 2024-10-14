@@ -66,8 +66,6 @@ function Register(){
                     localStorage.setItem("currentUser", result.userId);
                     localStorage.setItem("userName",formData.name);
                 }
-                localStorage.setItem("tokenKey", result.accessToken)
-                localStorage.setItem("refreshKey", result.refreshToken)
 
                 })
             .catch((err) => console.log(err))

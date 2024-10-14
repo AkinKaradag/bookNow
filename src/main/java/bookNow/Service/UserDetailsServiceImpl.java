@@ -33,6 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         // Prüfen, ob es sich um einen PrivateUser handelt
         UserModel user = userRepository.findByName(username);
+
         if (user != null) {
             return JwtUserDetails.build(user);
         }

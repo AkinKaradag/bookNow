@@ -34,7 +34,7 @@ function Login(){
 
     // Funktion zur Absendung der Login-Daten
     const sendRequest = () => {
-        const path = formData.userType === "COMPANYUSER" ? "/auth/login/company" : "/auth/login/private";
+        const path = formData.userType === "COMPANYUSER" ? "auth/login/company" : "auth/login/private";
 
         // Konfiguration der Anfragedaten abhängig vom Benutzer-Typ
         const finalFromData= formData.userType === "COMPANYUSER" ?{
@@ -66,10 +66,13 @@ function Login(){
                     localStorage.setItem("userName", formData.name);
                     localStorage.setItem("userType", result.userType);
                 }
+                if(result.accessToken && result.refreshToken) {
                 localStorage.setItem("tokenKey", result.accessToken);
                 localStorage.setItem("refreshKey", result.refreshToken);
-
-
+                navigate("/");
+                } else {
+                    navigate("/login")
+                }
 
                 navigate("/"); // Navigation zur Startseite nach erfolgreichem Login
             })
@@ -80,8 +83,8 @@ function Login(){
     }
 
     // Button-Klick-Handler zur Auslösung des Login-Requests
-    const handleButton = (path) => {
-        sendRequest(path)
+    const handleButton = () => {
+        sendRequest()
     }
 
 

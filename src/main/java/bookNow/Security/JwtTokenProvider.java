@@ -36,6 +36,17 @@ public class JwtTokenProvider {
     /**
      * Erstellt ein JWT-Token für die angegebene Authentifizierung.
      */
+
+    // Konstruktor für Testzwecke
+    public JwtTokenProvider(String appSecret, long expiresIn) {
+        this.APP_SECRET = appSecret;
+        this.EXPIRES_IN = expiresIn;
+    }
+
+    public JwtTokenProvider() {
+    }
+
+
     public String generateJwtToken(Authentication auth) {
 
         JwtUserDetails userDetails = (JwtUserDetails) auth.getPrincipal();
@@ -44,14 +55,13 @@ public class JwtTokenProvider {
         if (userDetails.getUserType() == null) {
             throw new IllegalArgumentException("User type not set");
         }
-
         return Jwts.builder()
-                .claim("id", (userDetails.getId()))
-                .claim("userType", userDetails.getUserType().toString())
-                .claim("issuedAt", new Date())
-                .claim("exp", expireDate)
-                .signWith(getKey())
-                .compact();
+                    .claim("id", (userDetails.getId()))
+                    .claim("userType", userDetails.getUserType().toString())
+                    .claim("issuedAt", new Date())
+                    .claim("exp", expireDate)
+                    .signWith(getKey())
+                    .compact();
     }
 
     /**
@@ -68,18 +78,12 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-
-
-    Long getUserIdFromJwt(String token) {
+    protected Long getUserIdFromJwt(String token) {
 
         //Claims claim = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
         Jws<Claims> claim = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token);
         Claims claims = claim.getPayload();
-        System.out.println("Claims: " + claims);
         Object idObject = claims.get("id");
-
-        System.out.println("ID Claim Type: " + (idObject != null ? idObject.getClass().getName() : "null"));
-        System.out.println("ID Claim Value: " + idObject);
 
 
         if (idObject == null) {
@@ -91,43 +95,45 @@ public class JwtTokenProvider {
             return (Long) idObject;
         } else {
 
-        System.out.println("Token Claims ID: " + claim);
-
             return Long.parseLong(idObject.toString());
 
     }
     }
 
-
-
     public UserType getUserTypeFromJwt(String token) {
-        Claims claim = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
-        return UserType.valueOf(claim.get("userType", String.class));
+        try {
+            Claims claim = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
+            UserType userType = UserType.valueOf(claim.get("userType", String.class));
+            return userType;
+        } catch (Exception e) {
+            System.out.println("Error extracting UserType from Token: " + e.getMessage());
+            return null;
+        }
     }
+
 
     /**
      * Überprüft, ob das angegebene Token gültig ist.
      */
-    boolean validateToken(String token) {
-        SecretKey key = getKey();
-        try {
-            System.out.println("Token validation");
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-            return !isTokenExpired(token);
-        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException |
-                 IllegalArgumentException e) {
-            System.out.println("Token validation failed");
-            return false;
-        }
-    }
 
-    /**
-     * Überprüft, ob das angegebene Token abgelaufen ist.
-     */
+        protected boolean validateToken(String token) {
+            System.out.println("Validating Token: " + token);
+            try {
+                Jws<Claims> claims = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token);
+                System.out.println("Token validated. Claims: " + claims);
+                return !isTokenExpired(token);
+            } catch (JwtException e) {
+                System.out.println("Token validation failed: " + e.getMessage());
+                return false;
+            }
+        }
+
+        /**
+         * Überprüft, ob das angegebene Token abgelaufen ist.
+         */
     private boolean isTokenExpired(String token) {
         try {
         Date expiration = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload().getExpiration();
-        System.out.println("Expiration: " + expiration);
         return expiration.before(new Date());
     } catch(Exception e) {
         System.out.println("Token expired");

@@ -2,14 +2,13 @@ package bookNow.Config;
 
 import bookNow.Security.JwtAuthenticationEntryPoint;
 import bookNow.Security.JwtAuthenticationFilter;
+import bookNow.Security.JwtTokenProvider;
 import bookNow.Service.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,22 +29,18 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
 
+
     private UserDetailsServiceImpl userDetailsService;
 
     private JwtAuthenticationEntryPoint handler;
 
+    private JwtTokenProvider jwtTokenProvider;
+
     // Konstruktor-Injektion für die Sicherheitskomponenten
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationEntryPoint handler) {
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationEntryPoint handler, JwtTokenProvider jwtTokenProvider) {
         this.userDetailsService = userDetailsService;
         this.handler = handler;
-    }
-
-    /**
-     * Bean für den JWT-Authentifizierungsfilter, um Anfragen mit JWT zu verarbeiten.
-     */
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     /**
@@ -60,24 +55,17 @@ public class SecurityConfig {
      * Bean für den Authentication Manager, der die Authentifizierung der Benutzer verwaltet.
      */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        return authenticationManagerBuilder.build();
     }
+
 
     /**
      * Konfiguration der CORS-Einstellungen, um Cross-Origin-Requests zu ermöglichen.
      */
-    @Bean
-    public CorsConfigurationSource corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
+
 
     /**
      * Konfiguration der Sicherheitsfilterkette. Hier werden Zugriffsrechte für Endpunkte definiert,
@@ -110,15 +98,41 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/companies/*").hasRole("COMPANYUSER")
                 .requestMatchers(HttpMethod.GET, "/service-companies").permitAll()
                 .requestMatchers(HttpMethod.GET, "/service-companies/*").permitAll()
-                .requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.GET, "/auth/register/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/register/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/login/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/auth/login/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
+
+
+
+                                .anyRequest().authenticated()
                 )
                 //.formLogin(AbstractHttpConfigurer::disable);
 
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
+    }
+
+    @Bean
+    public CorsConfigurationSource corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    /**
+     * Bean für den JWT-Authentifizierungsfilter, um Anfragen mit JWT zu verarbeiten.
+     */
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService);
     }
 
 

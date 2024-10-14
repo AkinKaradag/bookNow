@@ -23,6 +23,15 @@ import java.io.IOException;
  */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsServiceImpl userDetailsService) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
+    }
+
+    public JwtAuthenticationFilter() {
+    }
+
+
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
@@ -44,10 +53,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        System.out.println("Request received at JwtAuthenticationFilter");
         try {
             String jwtToken = extractJwtFromRequest(request);
-            System.out.println("JWT Token: " + jwtToken);
 
             if (StringUtils.hasText(jwtToken)) {
                 // Parsen des JWT-Tokens und Claims auslesen
@@ -59,10 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 Integer idInt = (Integer) claims.get("id", Integer.class);
                 Long id = idInt.longValue();
-                System.out.println("User ID: " + id);
-
                 UserType userType = UserType.valueOf((String) claims.get("userType"));
-                System.out.println("User Type: " + userType);
 
                 UserDetails userDetails;
                 if (userType == UserType.COMPANYUSER) {
@@ -73,7 +77,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
 
                 if (userDetails != null) {
-                    System.out.println("Benutzer gefunden: " + userType);
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -91,8 +94,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * Extrahiert das JWT-Token aus dem Authorization-Header der Anfrage.
      */
     private String extractJwtFromRequest(HttpServletRequest request) {
-        System.out.println("Authorization Header: " + request.getHeader("Authorization"));
-
         String bearer = request.getHeader("Authorization");
         if(StringUtils.hasText(bearer) && bearer.startsWith("Bearer "))
             return bearer.substring("Bearer".length() + 1);

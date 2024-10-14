@@ -8,6 +8,8 @@ import bookNow.Requests.CompanyRequest;
 import bookNow.Requests.RefreshTokenRequest;
 import bookNow.Requests.UserRequest;
 import bookNow.Response.AuthResponse;
+import bookNow.Response.LoginResponse;
+import bookNow.Response.RegistrationResponse;
 import bookNow.Security.JwtTokenProvider;
 import bookNow.Service.CompanyService;
 import bookNow.Service.RefreshTokenService;
@@ -56,47 +58,50 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login/private")
-    public AuthResponse login(@RequestBody UserRequest loginRequest) {
+    public LoginResponse login(@RequestBody UserRequest loginRequest) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getName(), loginRequest.getPassword());
         Authentication auth = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
         String jwtToken = jwtTokenProvider.generateJwtToken(auth);
         UserModel user = userService.findByName(loginRequest.getName());
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setAccessToken("Bearer " + jwtToken);
-        authResponse.setRefreshToken(refreshTokenService.createRefreshToken(user, null));
-        authResponse.setId(user.getId());
-        authResponse.setUserType(user.getUserType());
-        return authResponse;
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setAccessToken("Bearer " + jwtToken);
+        loginResponse.setRefreshToken(refreshTokenService.createRefreshToken(user, null));
+        loginResponse.setId(user.getId());
+        loginResponse.setUserType(user.getUserType());
+        return loginResponse;
     }
 
+
     @PostMapping("/login/company")
-    public AuthResponse login(@RequestBody CompanyRequest loginRequest) {
+    public LoginResponse login(@RequestBody CompanyRequest loginRequest) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getCompanyName(), loginRequest.getPassword());
         Authentication auth = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
         String jwtToken = jwtTokenProvider.generateJwtToken(auth);
         CompanyModel company = companyService.findByName(loginRequest.getCompanyName());
-        AuthResponse authResponse = new AuthResponse();
-        authResponse.setAccessToken("Bearer " + jwtToken);
-        authResponse.setRefreshToken(refreshTokenService.createRefreshToken(null, company));
-        authResponse.setId(company.getid());
-        authResponse.setUserType(company.getUserType());
-        return authResponse;
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setAccessToken("Bearer " + jwtToken);
+        loginResponse.setRefreshToken(refreshTokenService.createRefreshToken(null, company));
+        loginResponse.setId(company.getid());
+        loginResponse.setUserType(company.getUserType());
+        return loginResponse;
     }
 
     @PostMapping("/register/private")
-    public ResponseEntity<AuthResponse> registerPrivate (@RequestBody UserRequest registerRequest){
-        AuthResponse authResponse = new AuthResponse();
+    public ResponseEntity<RegistrationResponse> registerPrivate (@RequestBody UserRequest registerRequest){
+        System.out.println("Register endpoint called: " + registerRequest.getName() + " " + registerRequest.getEmail() + " " + registerRequest.getPassword());
+
+        RegistrationResponse registrationResponse = new RegistrationResponse();
        if (userService.findByName(registerRequest.getName()) != null) {
-           authResponse.setMessage("Username already exists");
-             return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+           registrationResponse.setMessage("Username already exists");
+             return new ResponseEntity<>(registrationResponse, HttpStatus.BAD_REQUEST);
          } else if(userService.findByEmail(registerRequest.getEmail()) != null) {
-           authResponse.setMessage("Email already exists");
-           return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+           registrationResponse.setMessage("Email already exists");
+           return new ResponseEntity<>(registrationResponse, HttpStatus.BAD_REQUEST);
        } else if(!EMAIL_PATTERN.matcher(registerRequest.getEmail()).matches()) {
-           authResponse.setMessage("Invalid email");
-           return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+           registrationResponse.setMessage("Invalid email");
+           return new ResponseEntity<>(registrationResponse, HttpStatus.BAD_REQUEST);
        } else {
        UserModel user = new UserModel();
        user.setName(registerRequest.getName());
@@ -104,29 +109,20 @@ public class AuthenticationController {
        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
        user.setUserType(registerRequest.getUserType());
        userService.createUser(user);
-
-       UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(registerRequest.getName(), registerRequest.getPassword());
-       Authentication auth = authenticationManager.authenticate(authToken);
-       SecurityContextHolder.getContext().setAuthentication(auth);
-       String jwtToken = jwtTokenProvider.generateJwtToken(auth);
-
-       authResponse.setMessage("Registration successful");
-       authResponse.setAccessToken("Bearer " + jwtToken);
-       authResponse.setRefreshToken(refreshTokenService.createRefreshToken(user, null));
-       authResponse.setId(user.getId());
-       return new ResponseEntity<>(authResponse, HttpStatus.OK);
-
-
-            }
+       registrationResponse.setMessage("Registration successful");
+       registrationResponse.setId(user.getId());
+       registrationResponse.setUserType(user.getUserType());
+       return new ResponseEntity<>(registrationResponse, HttpStatus.OK);
+       }
 
     }
 
     @PostMapping("/register/company")
-    public ResponseEntity<AuthResponse> registerCompany (@RequestBody CompanyRequest registerRequest){
-        AuthResponse authResponse = new AuthResponse();
+    public ResponseEntity<RegistrationResponse> registerCompany (@RequestBody CompanyRequest registerRequest){
+        RegistrationResponse registrationResponse = new RegistrationResponse();
         if (companyService.findByName(registerRequest.getCompanyName()) != null) {
-            authResponse.setMessage("Company already exists");
-            return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
+            registrationResponse.setMessage("Company already exists");
+            return new ResponseEntity<>(registrationResponse, HttpStatus.BAD_REQUEST);
         } else {
             CompanyModel company = new CompanyModel();
             company.setCompanyName(registerRequest.getCompanyName());
@@ -138,19 +134,10 @@ public class AuthenticationController {
             company.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
             company.setUserType(registerRequest.getUserType());
             companyService.createCompany(company);
-
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(registerRequest.getCompanyName(), registerRequest.getPassword());
-            Authentication auth = authenticationManager.authenticate(authToken);
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            String jwtToken = jwtTokenProvider.generateJwtToken(auth);
-
-            authResponse.setMessage("Registration successful");
-            authResponse.setAccessToken("Bearer " + jwtToken);
-            authResponse.setRefreshToken(refreshTokenService.createRefreshToken(null, company));
-            authResponse.setId(company.getid());
-            return new ResponseEntity<>(authResponse, HttpStatus.OK);
-
-
+            registrationResponse.setMessage("Registration successful");
+            registrationResponse.setId(company.getid());
+            registrationResponse.setUserType(company.getUserType());
+            return new ResponseEntity<>(registrationResponse, HttpStatus.OK);
         }
 
     }
@@ -173,9 +160,4 @@ public class AuthenticationController {
         }
 
     }
-
-
-
-
-
 }
