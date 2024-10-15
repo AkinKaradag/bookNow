@@ -36,3 +36,49 @@ Es wird ein Versuch mit React gestartet, um auch React zu lernen.
 
 Folgender Annotation wird verwendet, um die ID durch die Datenbank zu generieren:
 @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+# **Anleitung zum Starten der Applikation**
+
+Um die Applikation auszuführen, sind folgende Schritte zu befolgen:
+
+**1. Repository klonen**
+
+Das GitHub-Repository kann mit folgendem Befehl geklont werden:
+_git clone <https://github.com/AkinKaradag/bookNow.git>_
+
+**2. In das Projektverzeichnis wechseln**
+
+Mit folgendem Befehl:
+cd <projektverzeichnis>
+
+**3. Docker installieren**
+
+Falls Docker noch nicht installiert ist, kann es von der offiziellen Webseite heruntergeladen und installiert werden: https://www.docker.com/products/docker-desktop/
+
+**4. Docker-Container starten**
+
+Mit dem folgenden Befehl werden die Docker-Container gebaut und gestartet:
+docker-compose up --build
+
+**5. Applikation im Browser aufrufen**
+
+Nach dem erfolgreichen Start der Container ist die Applikation im Browser unter http://localhost:3000 erreichbar.
+
+**Hinweise:**
+
+-Abhängigkeiten: Es wird vorausgesetzt, dass Docker und Docker Compose installiert sind.
+-Konfiguration: Bei Bedarf können Konfigurationsdateien angepasst werden, um spezielle Einstellungen vorzunehmen.
+-Datenbankzugriff: Die Applikation verwendet eine PostgreSQL-Datenbank, die in einem Docker-Container läuft und automatisch gestartet wird.
+
+**Zusätzliche Befehle:**
+
+Docker-Container stoppen:
+docker-compose down
+
+Logs der Container anzeigen:
+docker-compose logs
+
+**Troubleshooting:**
+
+-Bei Problemen mit Port-Konflikten sicherstellen, dass die Ports 3000 (Frontend), 8080 (Backend) und 5432 (Datenbank) nicht von anderen Anwendungen belegt sind.
+-Überprüfen, ob alle notwendigen Umgebungsvariablen korrekt gesetzt sind.

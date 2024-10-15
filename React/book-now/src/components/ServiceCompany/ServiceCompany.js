@@ -292,7 +292,7 @@ function ServiceCompany(props) {
 
                 </CardContent>
                 <CardActions disableSpacing>
-                    <IconButton onClick={handleLike} disabled aria-label="add to favorites">
+                    <IconButton onClick={handleLike} aria-label="add to favorites">
                         <FavoriteIcon style={liked? {color: "red"}: null}/>
                     </IconButton>
 
