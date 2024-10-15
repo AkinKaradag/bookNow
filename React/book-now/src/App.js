@@ -37,11 +37,12 @@ function App() {
                     <Route path="/" element={<Home/>}></Route>
                     <Route path="users/:userId" element={<User/>}></Route>
                     <Route path="companies/:companyId" element={<Company />} />
-                    <Route path="auth/login/" element={localStorage.getItem("currentUser") != null ? <Navigate to="/"/>: <Login/>}></Route>
-                    <Route path="auth/register/" element={localStorage.getItem("currentUser") != null ? <Navigate to="/auth/login"/>: <Register/>}></Route>
-                    <Route path="services" element={<Services/>}></Route>
-                    <Route path="create-service" element={<CreateService/>}></Route>
-                    <Route path="appointments" element={<Appointment/>}></Route>
+                    <Route path="/auth/login" element={<Login />}></Route>
+                    <Route path="/auth/register" element={<Register />}></Route>
+
+                    <Route path="/services" element={<Services/>}></Route>
+                    <Route path="/create-service" element={<CreateService/>}></Route>
+                    <Route path="/appointments" element={<Appointment/>}></Route>
                 </Routes>
             </BrowserRouter>
         </div>

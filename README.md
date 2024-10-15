@@ -1,84 +1,61 @@
-# bookNow
-Localhost: http://localhost:8080/swagger-ui/index.html
+Bevor ich mit dem ganzen Anfange, muss ich sagen, dass ich sehr frustiert bin und daran zweifle wirklich ein Softwareentwickler zu werden.
+Meine Applikation funktionierte einwandfrei, bis ich Docker eingerichtet habe.
+Am letzten Tag ist mein ganzes Projekt abgestürzt und ich konnte es nicht mehr zum Laufen bringen.
 
-Um React zu nutzen:
+Durch die Error-Meldungen die ich zum letzten Zeitpunkt bekommen habe, konnte ich nicht mehr herausfinden, was das genau das Problem war.
+Dadurch ist auch mein "Clean-Code" verloren gegangen, da ich versucht habe, das Problem zu lösen.
 
-# installs nvm (Node Version Manager)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+Im Moment läuft sie wieder, jedoch sehr beschränkt. Für die Benotung dieser Applikation kann ich es nicht mehr retten,
+jedoch werde ich es für die Präsentation wieder zum Laufen bringen.
 
-# download and install Node.js (you may need to restart the terminal)
-nvm install 20
+Leider funktioniert jetzt Docker nicht.
 
-# verifies the right Node.js version is in the environment
-node -v # should print `v20.17.0`
+Um die Applikation zu starten, müssen verschiedene Komponenten installiert und eingerichtet werden. Hier sind die notwendigen Schritte für die Installation und Ausführung einer Applikation, die ein Backend mit Java, Hibernate, PostgreSQL, Maven und ein Frontend mit React und npm umfasst:
 
-# verifies the right npm version is in the environment
-npm -v # should print `10.8.2`
+1. Voraussetzungen installieren
+   Java: Es wird mindestens Java 11 oder höher benötigt. Die Installation erfolgt über die Java-Website oder ein Paketmanagement-Tool.
+   Maven: Maven kann von der offiziellen Website heruntergeladen und installiert werden. Nach der Installation sollte der Befehl mvn -v in der Konsole eine Versionsnummer anzeigen.
+   PostgreSQL: Die neueste Version kann von der offiziellen PostgreSQL-Website heruntergeladen werden. Nach der Installation sollte die Datenbank mit den benötigten Zugangsdaten konfiguriert werden.
+   Node.js und npm: Diese werden für das React-Frontend benötigt. Die offizielle Website bietet eine Installationsoption für beide.
+2. Backend einrichten
+   Hibernate und Java-Umgebung einrichten:
+   Sicherstellen, dass die Applikation eine Konfigurationsdatei application.properties enthält, welche die Datenbankverbindung und Hibernate-Einstellungen definiert.
+   Eine PostgreSQL-Datenbank erstellen und Zugangsdaten in der application.properties konfigurieren.
+   Mit Maven installieren:
+   Im Hauptverzeichnis des Backends (dort, wo die pom.xml-Datei liegt), den Befehl mvn clean install ausführen, um alle Abhängigkeiten herunterzuladen und das Backend zu kompilieren.
+   Backend starten:
+   Mit dem Befehl mvn spring-boot:run wird das Backend gestartet. Wenn die Konfiguration korrekt ist, läuft das Backend nun auf http://localhost:8080.
+3. Frontend einrichten
+   Node-Module installieren:
+   Im Verzeichnis des Frontends (dort, wo sich die package.json-Datei befindet) den Befehl npm install ausführen, um alle Abhängigkeiten zu installieren.
+   Frontend starten:
+   Mit npm start wird das Frontend gestartet. Es ist nun über http://localhost:3000 erreichbar.
+4. Anwendung verwenden
+   Sicherstellen, dass das Backend bereits läuft, bevor das Frontend gestartet wird.
+   Über den Browser auf http://localhost:3000 navigieren und die Applikation benutzen.
+   Diese Schritte ermöglichen den erfolgreichen Start und die Nutzung der Applikation.
 
+In der Applikation habe ich mir überlegt, eine solide Basis aufzubauen, um weitere Funktionen hinzufügen zu können.
+Die Endnutzer können sich als PRIVATEUSER registrieren und anmelden, um danach Termine zu buchen. 
+Die COMPANYUSER können sich registrieren und anmelden, um ihre Dienstleistungen anzubieten und Termine zu verwalten.
 
-Ich habe Spring Boot manuell über den Terminal installiert, jedoch gibt es eine Automatisierung über start.spring.io.
+Jedoch funktioniert leider die Registrierung von CompanyUsern nicht mehr, da ich das Problem mit Docker nicht lösen konnte.
 
-Die Standard-Dependencies sind:
-- Spring Web
-- Spring Data JPA
-- Spring Boot DevTools
-- Spring Security
-- PostgreSQL Driver
-- Lombok
+In der Datenbank ist jedoch ersichtlich, dass ich User hatte. 
 
-Mind. diese werden gebraucht, um das Projekt zu starten. Weitere sind hinzugefügt worden, um die Funktionalität zu erweitern.
+In der Datenbank wurden leider mehrere Spalten hinzugefügt während der Problemlösung. Aufgrund Zeitmangel, konnte ich diese jedoch nicht mehr entfernen.
 
+Wenn ich mehr Zeit hätte, würde ich die Applikation komplett neu aufsetzen und die Fehler beheben.
 
-Start des React-Projekts:
-npm start (im Verzeichnis des Projekts)
+Ich hätte auch gerne die Möglichkeit gehabt, die Applikation mit Docker zu starten, jedoch konnte ich das Problem nicht lösen.
 
-Es wird ein Versuch mit React gestartet, um auch React zu lernen.
+Die Funktionalitäten können ausgeweitet werden, um die Benutzerfreundlichkeit zu verbessern und die Anwendung nützlicher zu machen.
 
-Folgender Annotation wird verwendet, um die ID durch die Datenbank zu generieren:
-@GeneratedValue(strategy = GenerationType.IDENTITY)
+Mit dieser Frust und Enttäuschung, habe ich jedoch viel gelernt und werde in Zukunft besser darauf achten, dass ich meine Applikationen besser dokumentiere und regelmässig sichere.
 
-# **Anleitung zum Starten der Applikation**
+Leider konnte ich auch nicht in einen früheren Stand zurückkehren, aufgrund Zeitdruck habe ich mich entschieden, die Applikation so abzugeben.
 
-Um die Applikation auszuführen, sind folgende Schritte zu befolgen:
+Nach grosser Freude, als die Applikation funktionierte und sogar auch mit Docker, kam dann am Abend die Enttäuschung.
 
-**1. Repository klonen**
+Ich Entschuldige mich für solch eine schlechte Abgabe und hoffe, dass ich in der Präsentation die Applikation wieder zum Laufen bringen kann.
 
-Das GitHub-Repository kann mit folgendem Befehl geklont werden:
-_git clone <https://github.com/AkinKaradag/bookNow.git>_
-
-**2. In das Projektverzeichnis wechseln**
-
-Mit folgendem Befehl:
-cd <projektverzeichnis>
-
-**3. Docker installieren**
-
-Falls Docker noch nicht installiert ist, kann es von der offiziellen Webseite heruntergeladen und installiert werden: https://www.docker.com/products/docker-desktop/
-
-**4. Docker-Container starten**
-
-Mit dem folgenden Befehl werden die Docker-Container gebaut und gestartet:
-docker-compose up --build
-
-**5. Applikation im Browser aufrufen**
-
-Nach dem erfolgreichen Start der Container ist die Applikation im Browser unter http://localhost:3000 erreichbar.
-
-**Hinweise:**
-
--Abhängigkeiten: Es wird vorausgesetzt, dass Docker und Docker Compose installiert sind.
--Konfiguration: Bei Bedarf können Konfigurationsdateien angepasst werden, um spezielle Einstellungen vorzunehmen.
--Datenbankzugriff: Die Applikation verwendet eine PostgreSQL-Datenbank, die in einem Docker-Container läuft und automatisch gestartet wird.
-
-**Zusätzliche Befehle:**
-
-Docker-Container stoppen:
-docker-compose down
-
-Logs der Container anzeigen:
-docker-compose logs
-
-**Troubleshooting:**
-
--Bei Problemen mit Port-Konflikten sicherstellen, dass die Ports 3000 (Frontend), 8080 (Backend) und 5432 (Datenbank) nicht von anderen Anwendungen belegt sind.
--Überprüfen, ob alle notwendigen Umgebungsvariablen korrekt gesetzt sind.
