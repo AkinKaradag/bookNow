@@ -1,13 +1,13 @@
 import { useRefreshToken } from "../Auth/RefreshToken";
 
-const API_BASE_URL = 'http://localhost:3000/'; // Basis-URL für API-Anfragen
-
+const API_BASE_URL = '/api/'; // Basis-URL für API-Anfragen
+//http://localhost:3000/
 // Haupt-Hook für API-Anfragen mit Token-Erneuerungslogik
 const useApiRequest = () => {
     const { refreshToken } = useRefreshToken(); // Importiere die Funktion zum Erneuern des Tokens
 
     // Allgemeine Funktion für API-Anfragen, die alle HTTP-Methoden (GET, POST, PUT, DELETE) unterstützt
-    const apiRequest = async (method, endpoint, data = null) => {
+    const apiRequest = async (method, endpoint, data = null, refreshToken) => {
         // Aktuellen Token aus dem Local Storage holen
         let token = localStorage.getItem("tokenKey");
 
@@ -30,7 +30,7 @@ const useApiRequest = () => {
                     // Token abgelaufen, erneuere Token und wiederhole die Anfrage
                     token = await refreshToken();
                     localStorage.setItem("tokenKey", token);
-                    return apiRequest(method, endpoint, data); // Wiederhole die Anfrage
+                    return apiRequest(method, endpoint, data, refreshToken); // Wiederhole die Anfrage
                 }
                 // Andernfalls werfe einen Fehler mit der Statusmeldung
                 const errorText = await response.text();
@@ -51,10 +51,10 @@ const useApiRequest = () => {
     };
 
     // Funktionen für spezifische HTTP-Methoden, die `apiRequest` mit dem richtigen Methodentyp aufrufen
-    const post = (endpoint, data) => apiRequest('POST', endpoint, data);
-    const get = (endpoint) => apiRequest('GET', endpoint);
-    const put = (endpoint, data) => apiRequest('PUT', endpoint, data);
-    const del = (endpoint) => apiRequest('DELETE', endpoint);
+    const post = (endpoint, data) => apiRequest('POST', endpoint, data, refreshToken);
+    const get = (endpoint) => apiRequest('GET', endpoint, refreshToken);
+    const put = (endpoint, data) => apiRequest('PUT', endpoint, data, refreshToken);
+    const del = (endpoint) => apiRequest('DELETE', endpoint, refreshToken);
 
     return { post, get, put, del };
 };
