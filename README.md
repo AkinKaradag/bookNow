@@ -57,5 +57,7 @@ Leider konnte ich auch nicht in einen früheren Stand zurückkehren, aufgrund Ze
 
 Nach grosser Freude, als die Applikation funktionierte und sogar auch mit Docker, kam dann am Abend die Enttäuschung.
 
+Die grösste Frust ist, dass ich Stunden bis in die Nacht verbracht habe, um meine Applikation zu programmieren.
+
 Ich Entschuldige mich für solch eine schlechte Abgabe und hoffe, dass ich in der Präsentation die Applikation wieder zum Laufen bringen kann.
 
