@@ -62,7 +62,7 @@ public class JwtUserDetailsTest {
         JwtUserDetails userDetails = JwtUserDetails.build(company);
 
         // Überprüfe, ob die Firmeninformationen korrekt gesetzt sind
-        assertEquals(company.getid(), userDetails.getId());
+        assertEquals(company.getId(), userDetails.getId());
         assertEquals(company.getCompanyName(), userDetails.getUsername());
         assertEquals(company.getPassword(), userDetails.getPassword());
         assertEquals(UserType.COMPANYUSER, userDetails.getUserType());

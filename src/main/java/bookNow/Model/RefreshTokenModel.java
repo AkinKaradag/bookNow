@@ -43,5 +43,41 @@ public class RefreshTokenModel {
         public boolean isCompanyUser() {
             return company != null;
         }
+
+        public void setUser(UserModel user) {
+                this.user = user;
+        }
+
+        public void setCompany(CompanyModel company) {
+                this.company = company;
+        }
+
+        public Date getExpiryDate() {
+                return this.expiryDate;
+        }
+
+        public String getToken() {
+                return this.token;
+        }
+
+        public void setToken(String token) {
+                this.token = token;
+        }
+
+        public void setExpiryDate(Date expiryDate) {
+                this.expiryDate = expiryDate;
+        }
+
+        public CompanyModel getCompany() {
+                return this.company;
+        }
+
+        public UserModel getUser() {
+                return this.user;
+        }
+
+
+
+
 }
 

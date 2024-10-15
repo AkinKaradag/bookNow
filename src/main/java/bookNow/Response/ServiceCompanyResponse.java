@@ -23,7 +23,7 @@ public class ServiceCompanyResponse {
     // Konstruktor zur Initialisierung der Antwortdaten aus einem ServiceCompanyModel-Objekt
     public ServiceCompanyResponse(ServiceCompanyModel entity){
         this.serviceId = entity.getServiceId();
-        this.companyId = entity.getCompany().getid();
+        this.companyId = entity.getCompany().getId();
         this.companyName = entity.getCompany().getCompanyName();
         this.name = entity.getName();
         this.description = entity.getDescription();
@@ -31,4 +31,59 @@ public class ServiceCompanyResponse {
         this.duration = entity.getDuration();
     }
 
+    public Long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 }

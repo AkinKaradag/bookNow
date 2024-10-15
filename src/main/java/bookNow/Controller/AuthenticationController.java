@@ -83,7 +83,7 @@ public class AuthenticationController {
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setAccessToken("Bearer " + jwtToken);
         loginResponse.setRefreshToken(refreshTokenService.createRefreshToken(null, company));
-        loginResponse.setId(company.getid());
+        loginResponse.setId(company.getId());
         loginResponse.setUserType(company.getUserType());
         return loginResponse;
     }
@@ -135,7 +135,7 @@ public class AuthenticationController {
             company.setUserType(registerRequest.getUserType());
             companyService.createCompany(company);
             registrationResponse.setMessage("Registration successful");
-            registrationResponse.setId(company.getid());
+            registrationResponse.setId(company.getId());
             registrationResponse.setUserType(company.getUserType());
             return new ResponseEntity<>(registrationResponse, HttpStatus.OK);
         }
@@ -149,7 +149,7 @@ public class AuthenticationController {
         if(token.getToken().equals(refreshTokenRequest.getRefreshToken()) &&
                 !refreshTokenService.isRefreshExpired(token)) {
 
-            Long id = refreshTokenRequest.isCompanyUser() ? token.getCompany().getid() : token.getUser().getId();
+            Long id = refreshTokenRequest.isCompanyUser() ? token.getCompany().getId() : token.getUser().getId();
             UserType userType = refreshTokenRequest.isCompanyUser() ? UserType.COMPANYUSER : UserType.PRIVATEUSER;
             String jwtToken = jwtTokenProvider.generateJwtTokenById(id, userType);
             response.setMessage("token successfully refreshed.");

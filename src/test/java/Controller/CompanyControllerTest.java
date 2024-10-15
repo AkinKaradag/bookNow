@@ -78,7 +78,7 @@ class CompanyControllerTest {
 
         // Assert: Überprüfe, ob das Ergebnis nicht null ist und die ID stimmt
         assertNotNull(result);
-        assertEquals(1L, result.getid());
+        assertEquals(1L, result.getId());
         verify(companyService, times(1)).findById(1L);
     }
 

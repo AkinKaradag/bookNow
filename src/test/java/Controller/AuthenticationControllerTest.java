@@ -113,7 +113,7 @@ class AuthenticationControllerTest {
         assertNotNull(response);
         assertEquals("Bearer jwtToken", response.getAccessToken());
         assertEquals("refreshToken", response.getRefreshToken());
-        assertEquals(companyModel.getid(), response.getId());
+        assertEquals(companyModel.getId(), response.getId());
         assertEquals(companyModel.getUserType(), response.getUserType());
     }
 

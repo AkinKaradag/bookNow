@@ -15,4 +15,17 @@ public class AuthResponse {
     UserType userType; // Typ des Benutzers (z.B. PRIVATEUSER, COMPANYUSER)
     String accessToken; // JWT-Zugriffstoken
     String refreshToken; // Refresh-Token
+
+    public String getMessage() { return this.message; }
+    public String getAccessToken() { return this.accessToken; }
+
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
 }

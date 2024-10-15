@@ -93,7 +93,7 @@ public class CompanyServiceTest {
         CompanyModel result = companyService.findById(1L);
 
         assertNotNull(result);
-        assertEquals(1L, result.getid());
+        assertEquals(1L, result.getId());
     }
 
     @Test

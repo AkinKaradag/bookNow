@@ -8,7 +8,6 @@ import java.util.List;
 /**
  * Repräsentiert ein Company-Model in der Datenbank, das die Daten eines Unternehmens speichert.
  */
-@Data
 @Entity
 @Table(name = "companies")
 public class CompanyModel {
@@ -29,7 +28,7 @@ public class CompanyModel {
     private UserType userType; // Enum für Endnutzer und Firmenkonto
 
     // Getters und Setters
-    public Long getid() {
+    public Long getId() {
         return id;
     }
 
@@ -92,5 +91,17 @@ public class CompanyModel {
     public void setUserType(UserType userType) {
         this.userType = userType;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+
+
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+
 
 }
