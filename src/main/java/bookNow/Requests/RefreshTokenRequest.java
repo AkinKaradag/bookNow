@@ -2,7 +2,11 @@ package bookNow.Requests;
 
 import bookNow.Model.CompanyModel;
 import bookNow.Model.UserModel;
+import bookNow.Model.UserType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Repräsentiert eine Anfrage zum Aktualisieren des Refresh-Tokens,
@@ -12,57 +16,10 @@ import lombok.Data;
 public class RefreshTokenRequest {
     private Long id; // Benutzer- oder Unternehmens-ID, je nach Benutzertyp
     private String refreshToken; // Refresh-Token
+    @JsonProperty("isCompanyUser")
     private boolean isCompanyUser; // Gibt an, ob es sich um ein Unternehmens-Token handelt
     private UserModel user;
     private CompanyModel company;
     private String token; // Token
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
-    public boolean isCompanyUser() {
-        return isCompanyUser;
-    }
-
-    public void setCompanyUser(boolean companyUser) {
-        isCompanyUser = companyUser;
-    }
-
-    public UserModel getUser() {
-        return user;
-    }
-
-    public void setUser(UserModel user) {
-        this.user = user;
-    }
-
-    public CompanyModel getCompany() {
-        return company;
-    }
-
-    public void setCompany(CompanyModel company) {
-        this.company = company;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

@@ -2,6 +2,9 @@ package bookNow.Response;
 
 import bookNow.Model.AppointmentModel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -12,14 +15,14 @@ import java.time.LocalTime;
 @Data
 public class AppointmentResponse {
 
-    long appointmentId; // ID des Termins
-    long userId; // ID des Benutzers, der den Termin gebucht hat
-    long serviceId; // ID des gebuchten Services
-    String serviceName; // Name des gebuchten Services
-    long companyId; // ID der Firma, die den Service anbietet
-    String companyName; // Name der Firma
-    LocalDate appointmentDate; // Datum des Termins
-    LocalTime appointmentTime; // Uhrzeit des Termins
+    private long appointmentId; // ID des Termins
+    private long userId; // ID des Benutzers, der den Termin gebucht hat
+    private long serviceId; // ID des gebuchten Services
+    private  String serviceName; // Name des gebuchten Services
+    private long companyId; // ID der Firma, die den Service anbietet
+    private String companyName; // Name der Firma
+    private LocalDate appointmentDate; // Datum des Termins
+    private LocalTime appointmentTime; // Uhrzeit des Termins
 
     // Konstruktor zur Initialisierung der Antwortdaten aus einem AppointmentModel-Objekt
     public AppointmentResponse (AppointmentModel entity) {
@@ -33,67 +36,4 @@ public class AppointmentResponse {
         this.appointmentTime = entity.getAppointmentTime();
     }
 
-    public long getAppointmentId() {
-        return appointmentId;
-    }
-
-    public void setAppointmentId(long appointmentId) {
-        this.appointmentId = appointmentId;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public long getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(long serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(long companyId) {
-        this.companyId = companyId;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public LocalDate getAppointmentDate() {
-        return appointmentDate;
-    }
-
-    public void setAppointmentDate(LocalDate appointmentDate) {
-        this.appointmentDate = appointmentDate;
-    }
-
-    public LocalTime getAppointmentTime() {
-        return appointmentTime;
-    }
-
-    public void setAppointmentTime(LocalTime appointmentTime) {
-        this.appointmentTime = appointmentTime;
-    }
 }

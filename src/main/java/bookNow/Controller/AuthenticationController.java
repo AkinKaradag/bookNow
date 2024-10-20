@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
@@ -90,7 +91,6 @@ public class AuthenticationController {
 
     @PostMapping("/register/private")
     public ResponseEntity<RegistrationResponse> registerPrivate (@RequestBody UserRequest registerRequest){
-        System.out.println("Register endpoint called: " + registerRequest.getName() + " " + registerRequest.getEmail() + " " + registerRequest.getPassword());
 
         RegistrationResponse registrationResponse = new RegistrationResponse();
        if (userService.findByName(registerRequest.getName()) != null) {
@@ -146,12 +146,16 @@ public class AuthenticationController {
     public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         AuthResponse response = new AuthResponse();
         RefreshTokenModel token = refreshTokenService.getByUserOrCompany(refreshTokenRequest.getId(), refreshTokenRequest.isCompanyUser());
-        if(token.getToken().equals(refreshTokenRequest.getRefreshToken()) &&
-                !refreshTokenService.isRefreshExpired(token)) {
 
+
+        if(token.getToken().trim().equals(refreshTokenRequest.getRefreshToken().trim()) &&
+                !refreshTokenService.isRefreshExpired(token)) {
             Long id = refreshTokenRequest.isCompanyUser() ? token.getCompany().getId() : token.getUser().getId();
             UserType userType = refreshTokenRequest.isCompanyUser() ? UserType.COMPANYUSER : UserType.PRIVATEUSER;
             String jwtToken = jwtTokenProvider.generateJwtTokenById(id, userType);
+            response.setId(id);
+            response.setUserType(userType);
+            response.setRefreshToken(token.getToken());
             response.setMessage("token successfully refreshed.");
             response.setAccessToken("Bearer " + jwtToken);
             return new ResponseEntity<>(response, HttpStatus.OK);

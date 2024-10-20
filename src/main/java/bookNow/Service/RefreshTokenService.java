@@ -3,6 +3,7 @@ package bookNow.Service;
 import bookNow.Model.CompanyModel;
 import bookNow.Model.RefreshTokenModel;
 import bookNow.Model.UserModel;
+import bookNow.Model.UserType;
 import bookNow.Repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,12 +37,14 @@ public class RefreshTokenService {
                 token = new RefreshTokenModel();
                 token.setUser(user);
             }
+            token.setUserType(UserType.PRIVATEUSER);
         } else if (company != null) {
             token = refreshTokenRepository.findByCompany(company);
             if (token == null) {
                 token = new RefreshTokenModel();
                 token.setCompany(company);
             }
+            token.setUserType(UserType.COMPANYUSER);
         } else {
             throw new IllegalArgumentException("Either user or company must be specified.");
         }

@@ -2,6 +2,8 @@ package bookNow.Requests;
 
 import bookNow.Model.UserType;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Repräsentiert die Daten, die bei der Registrierung eines Benutzers erforderlich sind,
@@ -14,26 +16,6 @@ public class UserRequest {
     private String email; // E-Mail-Adresse des Benutzers
     private String password; // Passwort des Benutzers
     private UserType userType; // Benutzertyp (z.B. PRIVATEUSER)
-
-    public void setName(String name) { this.name = name; }
-    public void setPassword(String password) { this.password = password; }
-
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public UserType getUserType() {
-        return this.userType;
-    }
 
 
 }

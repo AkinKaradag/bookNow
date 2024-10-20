@@ -18,7 +18,8 @@ import java.util.List;
  * Diese Klasse implementiert die UserDetails-Schnittstelle von Spring Security und stellt Details
  * für die Authentifizierung und Autorisierung des Benutzers bereit.
  */
-
+@Getter
+@Setter
 public class JwtUserDetails implements UserDetails {
 
 
@@ -68,19 +69,6 @@ public class JwtUserDetails implements UserDetails {
         );
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-
-    public UserType getUserType() {
-        return this.userType;
-    }
-
     @Override
     public String getUsername() {
         return username;
@@ -94,21 +82,6 @@ public class JwtUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
     }
 
     @Override

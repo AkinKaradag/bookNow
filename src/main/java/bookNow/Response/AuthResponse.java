@@ -2,6 +2,8 @@ package bookNow.Response;
 
 import bookNow.Model.UserType;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Antwortklasse für Authentifizierungsanfragen, die die Authentifizierungsergebnisse enthält,
@@ -10,22 +12,11 @@ import lombok.Data;
 @Data
 public class AuthResponse {
 
-    String message; // Nachricht zur Authentifizierung
-    Long id; // ID des Benutzers oder Unternehmens
-    UserType userType; // Typ des Benutzers (z.B. PRIVATEUSER, COMPANYUSER)
-    String accessToken; // JWT-Zugriffstoken
-    String refreshToken; // Refresh-Token
+    private String message; // Nachricht zur Authentifizierung
+    private Long id; // ID des Benutzers oder Unternehmens
+    private UserType userType; // Typ des Benutzers (z.B. PRIVATEUSER, COMPANYUSER)
+    private String accessToken; // JWT-Zugriffstoken
+    private String refreshToken; // Refresh-Token
 
-    public String getMessage() { return this.message; }
-    public String getAccessToken() { return this.accessToken; }
-
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
 
 }

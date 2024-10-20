@@ -4,9 +4,11 @@ import {Link} from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import {postWithoutAuth} from "../APIServices/ApiPost";
+import { useNavigate } from "react-router-dom";
 
 
 function Register(){
+    const navigate = useNavigate();
     // Zustandsvariablen für Formulardaten und Benutzer-Typ
     const [formData, setFormData] = useState({
         name: "",
@@ -55,6 +57,9 @@ function Register(){
             userType: formData.userType
         }
 
+        localStorage.removeItem("tokenKey");
+        localStorage.removeItem("refreshKey");
+
         // Senden der Anfrage ohne Authentifizierung
         postWithoutAuth(`auth/register${path}`, finalFormData)
             .then((result) => {
@@ -66,7 +71,7 @@ function Register(){
                     localStorage.setItem("currentUser", result.userId);
                     localStorage.setItem("userName",formData.name);
                 }
-
+                navigate('/auth/login');
                 })
             .catch((err) => console.log(err))
     }

@@ -39,43 +39,13 @@ public class RefreshTokenModel {
         @Temporal(TemporalType.TIMESTAMP)
         private Date expiryDate;
 
+        @Enumerated(EnumType.STRING)
+        private UserType userType;
+
         // Methode zur Feststellung, ob es sich um einen CompanyUser handelt
         public boolean isCompanyUser() {
-            return company != null;
+            return userType == UserType.COMPANYUSER;
         }
-
-        public void setUser(UserModel user) {
-                this.user = user;
-        }
-
-        public void setCompany(CompanyModel company) {
-                this.company = company;
-        }
-
-        public Date getExpiryDate() {
-                return this.expiryDate;
-        }
-
-        public String getToken() {
-                return this.token;
-        }
-
-        public void setToken(String token) {
-                this.token = token;
-        }
-
-        public void setExpiryDate(Date expiryDate) {
-                this.expiryDate = expiryDate;
-        }
-
-        public CompanyModel getCompany() {
-                return this.company;
-        }
-
-        public UserModel getUser() {
-                return this.user;
-        }
-
 
 
 

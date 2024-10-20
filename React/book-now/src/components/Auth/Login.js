@@ -53,6 +53,9 @@ function Login(){
             return;
         }
 
+        localStorage.removeItem("tokenKey");
+        localStorage.removeItem("refreshKey");
+
         // Anfrage ohne Authentifizierung senden
         post(path, finalFromData)
             .then((result) => {
