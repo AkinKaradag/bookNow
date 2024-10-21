@@ -1,6 +1,6 @@
 import { useRefreshToken } from "../Auth/RefreshToken";
 
-const API_BASE_URL = 'http://localhost:3000/'; // Basis-URL für API-Anfragen
+const API_BASE_URL = '/api/'; // Basis-URL für API-Anfragen
 //http://localhost:3000/
 // Haupt-Hook für API-Anfragen mit Token-Erneuerungslogik
 const useApiRequest = () => {
