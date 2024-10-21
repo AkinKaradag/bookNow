@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: src/Dockerfile  # Pfad zum Dockerfile im src-Verzeichnis
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/bookNowDB
       SPRING_DATASOURCE_USERNAME: postgres
