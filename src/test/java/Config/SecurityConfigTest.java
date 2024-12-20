@@ -40,20 +40,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Testklasse für die Sicherheitskonfigurationsklasse.
  */
-@SpringBootTest(classes = Application.class) // Referenziere die Hauptklasse der Anwendung
+//@SpringBootTest(classes = Application.class) // Referenziere die Hauptklasse der Anwendung
+@WebMvcTest(SecurityConfig.class)
 @Import(SecurityConfig.class)
 public class SecurityConfigTest {
 
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
+    @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Autowired
+    @MockBean
     private JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
+    @MockBean
     private AuthenticationManager authenticationManager;
 
     private MockMvc mockMvc;

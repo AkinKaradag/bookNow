@@ -1,8 +1,5 @@
 steps:
   - id: "Run Tests"
-    name: maven:3.9.4-eclipse-temurin-20
-    entrypoint: mvn
-    args: ["test"]
 
   - name: 'docker/compose:1.29.2'
     args: ['up', '-d']
@@ -17,6 +14,13 @@ steps:
           sleep 1
         done
         echo "PostgreSQL ist bereit!"
+
+  - name: maven:3.9.4-eclipse-temurin-20
+    entrypoint: mvn
+    args: ["test"]
+
+  - name: 'docker/compose:1.29.2'
+    args: [ 'down' ]
 
 options:
    logging: CLOUD_LOGGING_ONLY
