@@ -26,7 +26,7 @@ public class UserResponseTest {
         // Assert: Überprüfen, ob alle Felder korrekt initialisiert wurden
         assertEquals(1L, userResponse.getUserId());
         assertEquals("Test User", userResponse.getUserName());
-        assertEquals("testuser@example.com", userResponse.getEmail());
+        assertEquals("wrongtestuser@example.com", userResponse.getEmail());
         assertEquals("testPassword", userResponse.getPassword());
     }
 }
