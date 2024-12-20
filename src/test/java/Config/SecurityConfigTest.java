@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.FilterChainProxy;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -44,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SecurityConfig.class)
 @Import(SecurityConfig.class)
+@ContextConfiguration(classes = Application.class) // Füge die Hauptklasse der Anwendung als Konfiguration hinzu für Google Cloud Build
 public class SecurityConfigTest {
 
     @Autowired
