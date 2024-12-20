@@ -4,6 +4,20 @@ steps:
     entrypoint: mvn
     args: ["test"]
 
+  - name: 'docker/compose:1.29.2'
+    args: ['up', '-d']
+
+  - name: 'alpine:latest'
+    entrypoint: sh
+    args:
+      - '-c'
+      - |
+        echo "Warten auf PostgreSQL..."
+        until nc -z localhost 5432; do
+          sleep 1
+        done
+        echo "PostgreSQL ist bereit!"
+
 options:
    logging: CLOUD_LOGGING_ONLY
   #- id: "Build Application"
