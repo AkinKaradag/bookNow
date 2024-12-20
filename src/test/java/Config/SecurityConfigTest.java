@@ -39,11 +39,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Testklasse für die Sicherheitskonfigurationsklasse.
+ * (at)SpringBootTest(classes = Application.class) // Referenziere die Hauptklasse der Anwendung wurde entfernt, um den Test auf Google Cloud Build auszuführen.
  */
-//@SpringBootTest(classes = Application.class) // Referenziere die Hauptklasse der Anwendung
+
 @WebMvcTest(SecurityConfig.class)
 @Import(SecurityConfig.class)
 public class SecurityConfigTest {
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @Autowired
     private WebApplicationContext context;
@@ -56,8 +60,6 @@ public class SecurityConfigTest {
 
     @MockBean
     private AuthenticationManager authenticationManager;
-
-    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() throws ServletException, IOException {
