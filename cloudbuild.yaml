@@ -10,7 +10,7 @@ steps:
       "build",
       "-f", "src/Dockerfile",
       "-t", "europe-west6-docker.pkg.dev/booknow-akin/docker-repo-booknow/booknow-docker-img:latest",
-      "." ]
+      ".." ] # Build-Kontext ist jetzt das übergeordnete Verzeichnis
 
   - id: "Push Docker Image"
     name: gcr.io/cloud-builders/docker
