@@ -3,11 +3,11 @@ FROM maven:3.9.4-eclipse-temurin-20 AS build
 WORKDIR /app
 
 # Kopiere die pom.xml und lade Abhängigkeiten vor
-COPY ../pom.xml .
+COPY pom.xml .
 RUN mvn dependency:go-offline
 
 # Anwendungscode kopieren und bauen
-COPY ./ ./src
+COPY src ./src
 RUN mvn package
 
 # Runtime-Stage mit schlankem JDK 20

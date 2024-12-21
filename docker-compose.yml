@@ -2,7 +2,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: src/Dockerfile  # Pfad zum Dockerfile im src-Verzeichnis
+      dockerfile: Dockerfile  # Pfad zum Dockerfile im src-Verzeichnis
     ports:
       - "8081:8080"
     environment:
