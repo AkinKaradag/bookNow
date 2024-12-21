@@ -2,12 +2,22 @@ steps:
   - id: "Run Tests"
     name: maven:3.9.4-eclipse-temurin-20
     entrypoint: mvn
-    args: ["test"]
+    args: ["clean", "test"]
+
+  - id: "Build Docker Image"
+    name: gcr.io/cloud-builders/docker
+    args: [
+      "build",
+      "f", "src/Dockerfile",
+      "-t", "europe-west6-docker.pkg.dev/booknow-akin/docker-repo-booknow/booknow-docker-img:latest",
+      "." ]
+
+  - id: "Push Docker Image"
+    name: gcr.io/cloud-builders/docker
+    args: [ "push", "europe-west6-docker.pkg.dev/booknow-akin/docker-repo-booknow/booknow-docker-img:latest" ]
+
 
 options:
    logging: CLOUD_LOGGING_ONLY
-  #- id: "Build Application"
-  #  name: maven:3.9.4-eclipse-temurin-20
-  #  entrypoint: mvn
-  #  args: ["clean", "package", "-DskipTests"]
-  #  waitFor: ["Run Tests"]
+
+
