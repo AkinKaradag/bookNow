@@ -30,7 +30,8 @@ steps:
       "--region",
       "europe-west6",
       "--allow-unauthenticated",
-      "PORT=8080"
+      "--port",
+      "8080"
     ]
 
 options:
