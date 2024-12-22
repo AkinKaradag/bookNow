@@ -29,6 +29,8 @@ steps:
       "europe-west6-docker.pkg.dev/booknow-akin/docker-repo-booknow/booknow-docker-img:$COMMIT_SHA",
       "--region",
       "europe-west6",
+      "--timeout",
+      "300s",
       "--allow-unauthenticated",
       "--port",
       "8080"
