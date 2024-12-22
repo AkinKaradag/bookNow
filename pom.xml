@@ -44,11 +44,17 @@
             <version>6.6.0.Final</version>
         </dependency>
 
-        <!-- PostgreSQL JDBC Driver -->
+        <!-- PostgreSQL JDBC Driver
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.7.4</version>
+        </dependency> --> <!-- aufgrund Probleme auf Google Cloud Run wird SQLLite verwendet -->
+
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.44.0.0</version>
         </dependency>
 
         <!-- Spring Boot Starter für Tests (optional) -->
