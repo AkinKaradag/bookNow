@@ -16,7 +16,7 @@ steps:
     args: [ "push", "europe-west6-docker.pkg.dev/booknow-akin/docker-repo-booknow/booknow-docker-img:$COMMIT_SHA" ]
 
   - id: "Deploy to Cloud Run"
-    name: "gcr.io/cloud-builders/gcloud"
+    name: gcr.io/cloud-builders/gcloud
     args: [
       "run",
       "deploy",
