@@ -29,9 +29,6 @@ steps:
       "europe-west6-docker.pkg.dev/booknow-akin/docker-repo-booknow/booknow-docker-img:$COMMIT_SHA",
       "--region",
       "europe-west6",
-      '--set-env-vars', 'SPRING_DATASOURCE_URL=jdbc:postgresql://<CLOUD-SQL-INSTANCE>:5432/bookNowDB',
-      '--set-env-vars', 'SPRING_DATASOURCE_USERNAME=postgres',
-      '--set-env-vars', 'SPRING_DATASOURCE_PASSWORD=postgres',
       "--allow-unauthenticated",
       "--port",
       "8080"
