@@ -14,6 +14,8 @@ RUN mvn package
 FROM eclipse-temurin:20-jdk
 WORKDIR /app
 
+COPY bookNowDB.sqlite /app/bookNowDB.sqlite
+
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
