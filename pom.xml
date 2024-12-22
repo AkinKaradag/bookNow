@@ -57,6 +57,12 @@
             <version>3.44.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-community-dialects</artifactId>
+            <version>6.2.7.Final</version>
+        </dependency>
+
         <!-- Spring Boot Starter für Tests (optional) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
