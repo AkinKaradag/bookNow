@@ -14,9 +14,6 @@ RUN mvn package
 FROM eclipse-temurin:20-jdk
 WORKDIR /app
 
-COPY init.sql /app/
-RUN sqlite3 /app/bookNowDB.sqlite < /app/init.sql
-
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 COPY bookNowDB.sqlite /app/bookNowDB.sqlite
