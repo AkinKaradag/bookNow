@@ -79,7 +79,7 @@ public class SecurityConfig {
                 .exceptionHandling( exceptions -> exceptions.authenticationEntryPoint(handler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll() // Swagger erlauben
+                .requestMatchers("/", "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll() // Swagger erlauben
                 .requestMatchers(HttpMethod.POST, "/appointments").hasAnyRole("COMPANYUSER", "PRIVATEUSER")
                 .requestMatchers(HttpMethod.GET, "/appointments").hasAnyRole("COMPANYUSER", "PRIVATEUSER")
                 .requestMatchers(HttpMethod.GET, "/appointments/*").hasAnyRole("COMPANYUSER", "PRIVATEUSER")
