@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 /**
  * Repräsentiert ein Appointment-Model in der Datenbank, welches die Daten eines Termins enthält.
@@ -20,8 +21,8 @@ public class AppointmentModel {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    //@GeneratedValue(strategy = GenerationType.IDENTITY) - nicht möglich mit SQLite
+    private Long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(columnDefinition = "DATE")
     private LocalDate appointmentDate;

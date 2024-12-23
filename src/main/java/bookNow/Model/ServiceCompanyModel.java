@@ -5,6 +5,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * Repräsentiert ein ServiceCompany-Model, das die Serviceleistungen eines Unternehmens speichert.
@@ -14,8 +15,8 @@ import java.math.BigDecimal;
 public class ServiceCompanyModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    //@GeneratedValue(strategy = GenerationType.IDENTITY) - nicht möglich mit SQLite
+    private Long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
 
     private String name;
 

@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Repräsentiert ein Refresh-Token-Model, welches für die Authentifizierung in der Datenbank gespeichert wird.
@@ -17,8 +18,8 @@ import java.util.Date;
 public class RefreshTokenModel {
 
         @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        Long id;
+        //@GeneratedValue(strategy = GenerationType.IDENTITY) - nicht möglich mit SQLite
+        Long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id", nullable = true)

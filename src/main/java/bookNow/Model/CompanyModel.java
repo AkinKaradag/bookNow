@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Repräsentiert ein Company-Model in der Datenbank, das die Daten eines Unternehmens speichert.
@@ -13,8 +14,8 @@ import java.util.List;
 public class CompanyModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    //@GeneratedValue(strategy = GenerationType.IDENTITY) - nicht möglich mit SQLite
+    private Long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
 
     private String companyName;
     private String companyAddress;
