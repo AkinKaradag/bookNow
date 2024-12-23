@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SwaggerRedirectController {
     @GetMapping("/")
     public String redirectToSwagger() {
-        return "redirect:/swagger-ui.html";
+        return "redirect:https://booknow-98891799677.europe-west6.run.app/swagger-ui/index.html";
     }
 }
