@@ -9,18 +9,16 @@ weil die von Cloud Run erstellte URL nicht direkt auf das Swagger-UI verweist.
 Falls der Redirect nicht funktioniert bitte die URL /swagger-ui/index.html an die Cloud Run URL anhängen.
 
 ## Inhaltsverzeichnis
-1. [Einleitung](#1-einleitung)
-2. [Cloud Build](#2-cloud-build)
-<br>
-      2.1 [Trigger Erstellen](#1.1-trigger-erstellen)
-<br>
-      2.2 [Test Erfolgreich](#1.1-test-erfolgreich)
-<br>
-      2.3 [Test Fehlgeschlagen](#1.2-test-fehlgeschlagen)
-3. [Artifact Registry](#3-artifact-registry)
-4. [Cloud Run](#4-cloud-run)
-5. [Herausforderungen](#5-herausforderungen)
-6. [Reflexion](#6-reflexion)
+## Inhaltsverzeichnis
+1. **[Einleitung](#1-einleitung)**
+2. **[Cloud Build](#2-cloud-build)**
+    - [2.1 Trigger Erstellen](#21-trigger-erstellen)
+    - [2.2 Test Erfolgreich](#22-test-erfolgreich)
+    - [2.3 Test Fehlgeschlagen](#23-test-fehlgeschlagen)
+3. **[Artifact Registry](#3-artifact-registry)**
+4. **[Cloud Run](#4-cloud-run)**
+5. **[Herausforderungen](#5-herausforderungen)**
+6. **[Reflexion](#6-reflexion)**
 
 ## 1. Einleitung
 In diesem Dokument wurde die Umsetzung des ATL 2 beschrieben. Dabei wurden die einzelnen Schritte erläutert, die für die Realisierung erforderlich waren. <br>
