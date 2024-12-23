@@ -3,6 +3,7 @@ package bookNow.Model;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Repräsentiert ein User-Model, das die Daten eines Nutzers speichert.
@@ -12,8 +13,8 @@ import java.util.List;
 public class UserModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    //@GeneratedValue(strategy = GenerationType.IDENTITY) - nicht möglich mit SQLite
+    private Long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
 
     private String name;
     private String email;
