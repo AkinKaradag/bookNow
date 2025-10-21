@@ -1,4 +1,54 @@
-Readme von ATL 1 wird nochmals geschrieben als Dokumentation für mich.
+# ATL 1
+
+# BookNow
+
+BookNow ist eine selbst entwickelte Full-Stack Buchungsplattform, die es Firmen ermöglicht, Dienstleistungen zu verwalten und Terminbuchungen zu organisieren. Privatkunden können sich ganz einfach registrieren und bei der gewünschten Firma eine Dienstleistung buchen. Das Projekt entstand im Rahmen eines Studienmoduls, wurde jedoch eigenständig konzipiert und umgesetzt. Ziel war es, eine vollständige Webanwendung zu entwickeln und moderne Entwicklungspraktiken praktisch anzuwenden.
+
+## 🚀 Ziel des Projekts
+
+Das Hauptziel war der Aufbau einer funktionsfähigen Plattform, mit der Firmen eigene Dienstleistungen erstellen, verwalten und die Privatkunden Termine buchen können. Dabei sollten Backend, Datenbank, Frontend und Authentifizierung zu einer lauffähigen Lösung integriert werden.
+
+## 🧰 Tech Stack
+
+- **Backend:** Java, Spring Boot  
+- **Frontend:** React  
+- **Datenbank (Development):** PostgreSQL
+- **Datenbank (Cloud Deployment):** SQLite  
+- **API:** REST  
+- **Authentifizierung:** JWT (JSON Web Token)  
+- **Build & Dependency:** Maven  
+- **Versionierung:** Git, GitHub
+
+## Hauptfunktionen
+
+- Registrierung und Login für Firmenkunden und Privatkunden
+- Anlegen und Verwalten von Dienstleistungen  
+- Terminbuchung für Kundinnen und Kunden  
+- Authentifizierung mit JWT  
+- Datenhaltung in PostgreSQL  
+- Client-Server-Kommunikation über REST API
+
+## Architekturüberblick
+
+Das Backend basiert auf einer klassischen Schichtenarchitektur:
+- **Controller Layer**: REST-Endpunkte  
+- **Service Layer**: Business-Logik  
+- **Repository Layer**: Datenbankzugriff via JPA/Hibernate
+
+Das Frontend wurde mit React aufgebaut und kommuniziert über HTTP mit dem Backend. Die Datenbank wird lokal oder in der Cloud betrieben.
+
+## Lern- und Entwicklungsfokus
+
+- Praktische Anwendung von Java Spring Boot und React in einem Full-Stack Kontext  
+- Aufbau einer REST API und Integration ins Frontend  
+- JWT-basiertes Authentifizierungssystem  
+- Umgang mit relationalen Datenbanken  
+- Strukturierte Codeorganisation und Versionierung
+
+## Lizenz / Hinweis
+
+Dieses Projekt ist ein Lern- und Showcase-Projekt, das im Rahmen des Studiums entstanden ist und kontinuierlich weiterentwickelt wird. Es dient als praktischer Nachweis meiner Erfahrung in Full-Stack-Entwicklung.
+
 
 ---------------------------------------------------------------------------------------------------
 
